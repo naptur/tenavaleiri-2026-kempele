@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: sheets-no-players-weather-v3 2026-06-21 -->
+<!-- version: sheets-talkoot-kyydit-combined-v4 2026-06-21 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -154,7 +154,6 @@ let weatherError = "";
 
 const INFO_TAB_IDS = {
   talkoot: "talkoot",
-  kyydit: "kyydit",
   ruoka: "ruoka",
   osoitteet: "osoitteet",
   yhteystiedot: "yhteystiedot",
@@ -445,7 +444,7 @@ function renderTabs() {
     dayCont.appendChild(b);
   });
   [
-    [INFO_TAB_IDS.talkoot, "🙋 Talkoot"], [INFO_TAB_IDS.kyydit, "🚗 Kyydit"], [INFO_TAB_IDS.ruoka, "🍴 Ruoka"],
+    [INFO_TAB_IDS.talkoot, "🙋 Talkoot"], [INFO_TAB_IDS.ruoka, "🍴 Ruoka"],
     [INFO_TAB_IDS.osoitteet, "📍 Osoitteet"], [INFO_TAB_IDS.yhteystiedot, "📞 Yhteystiedot"], [INFO_TAB_IDS.info, "ℹ️ Info"],
     [INFO_TAB_IDS.saa, "🌤️ Sää"]
   ].forEach(([id,label]) => {
@@ -460,7 +459,6 @@ function renderTabs() {
 function renderEvents() {
   const tab = getCurrentTab();
   if (tab === INFO_TAB_IDS.talkoot) return renderTalkootTab();
-  if (tab === INFO_TAB_IDS.kyydit) return renderKyyditTab();
   if (tab === INFO_TAB_IDS.ruoka) return renderRuokaTab();
   if (tab === INFO_TAB_IDS.osoitteet) return renderOsoitteetTab();
   if (tab === INFO_TAB_IDS.yhteystiedot) return renderYhteystiedotTab();
@@ -548,22 +546,96 @@ function renderKyyditTab() {
 function renderTalkootTab() {
   hideNext();
   const list = document.getElementById("eventList");
-  const rows = visibleRows(DATA.talkoot).sort((a,b) => (normDate(pick(a,["date","paivamaara"])) + pick(a,["time","aika"])).localeCompare(normDate(pick(b,["date","paivamaara"])) + pick(b,["time","aika"])));
-  const open = rows.filter(r => !pick(r,["person","henkilo"]) && pick(r,["role","rooli"])).length;
-  let html = loadErrorsHtml() + `<div class="${open ? "next-banner visible" : "event"}" style="display:block;margin-bottom:14px;"><div class="nb-label">Talkoot</div><div class="nb-title">Avoimia talkoovuoroja: ${open}</div><div class="nb-sub">Yksi rivi vastaa yhtä roolia yhdessä ottelussa tai tapahtumassa.</div></div>`;
-  let last = "";
-  for (const r of rows) {
+
+  const talkooRows = visibleRows(DATA.talkoot).sort((a,b) =>
+    (normDate(pick(a,["date","paivamaara"])) + pick(a,["time","aika"])).localeCompare(
+     normDate(pick(b,["date","paivamaara"])) + pick(b,["time","aika"]))
+  );
+  const kyytiRows = visibleRows(DATA.kyydit).sort((a,b) =>
+    (normDate(pick(a,["date","paivamaara"])) + pick(a,["departure_time","lahtoaika","time"])).localeCompare(
+     normDate(pick(b,["date","paivamaara"])) + pick(b,["departure_time","lahtoaika","time"]))
+  );
+
+  const openTalkoot = talkooRows.filter(r => !pick(r,["person","henkilo"]) && pick(r,["role","rooli"])).length;
+  const openKyydit = kyytiRows.filter(r => !pick(r,["driver","kuljettaja"])).length;
+
+  let html = loadErrorsHtml() + `<div class="${(openTalkoot + openKyydit) ? "next-banner visible" : "event"}" style="display:block;margin-bottom:14px;">
+    <div class="nb-label">Talkoot ja kyydit</div>
+    <div class="nb-title">Avoimia talkoovuoroja: ${openTalkoot} · avoimia kyytejä: ${openKyydit}</div>
+    <div class="nb-sub">Toimitsijavuorot ja Auto 1 / Auto 2 / Auto 3 -kyydit samassa näkymässä.</div>
+  </div>`;
+
+  const cards = [];
+
+  // Ryhmittele toimitsijavuorot ottelun/tapahtuman mukaan.
+  const talkooGroups = new Map();
+  for (const r of talkooRows) {
     const d = normDate(pick(r,["date","paivamaara"]));
-    if (d !== last) { last = d; html += `<div class="section-title">${formatDate(d)}</div>`; }
-    const person = pick(r,["person","henkilo"]);
-    const sub = [
-      pick(r,["match","ottelu"]) ? esc(pick(r,["match","ottelu"])) : "",
-      pick(r,["stadium","stadion"]) ? "📍 " + esc(pick(r,["stadium","stadion"])) : "",
-      person ? "Tekijä: " + esc(person) : "Tekijä: ❗ avoin — ilmoittaudu",
-      pick(r,["notes","lisatiedot"]) ? esc(pick(r,["notes","lisatiedot"])) : ""
-    ].filter(Boolean).join("<br>");
-    html += eventHtml({ time:normalizeTime(pick(r,["time","aika"])), icon:"🙋", color:"ic-red", title:pick(r,["role","rooli"],"Talkoovuoro"), sub }, person ? "" : "open");
+    const time = normalizeTime(pick(r,["time","aika"]));
+    const match = pick(r,["match","ottelu"], "Toimitsijavuorot");
+    const stadium = pick(r,["stadium","stadion"]);
+    const key = [d, time, match, stadium].join("|");
+    if (!talkooGroups.has(key)) talkooGroups.set(key, { type:"talkoo", date:d, time, match, stadium, rows:[] });
+    talkooGroups.get(key).rows.push(r);
   }
+
+  talkooGroups.forEach(g => {
+    const roles = g.rows.map(r => {
+      const role = pick(r,["role","rooli"], "Rooli");
+      const person = pick(r,["person","henkilo"]);
+      const notes = pick(r,["notes","lisatiedot"]);
+      return `<div style="margin-top:3px;"><strong>${esc(role)}:</strong> ${person ? esc(person) : '<span style="color:var(--red);font-weight:700;">❗ Avoin — ilmoittaudu!</span>'}${notes ? `<br><span style="color:var(--sub);">${esc(notes)}</span>` : ""}</div>`;
+    }).join("");
+    const sub = [g.stadium ? "📍 " + esc(g.stadium) : "", roles].filter(Boolean).join("<br>");
+    cards.push({ date:g.date, time:g.time, sortTime:g.time, html:eventHtml({ time:g.time, icon:"🙋", color:"ic-red", title:g.match, sub }, g.rows.some(r => !pick(r,["person","henkilo"])) ? "open" : "") });
+  });
+
+  // Ryhmittele kyydit lähdön mukaan, ja näytä rivit Auto 1, Auto 2, Auto 3...
+  const kyytiGroups = new Map();
+  for (const r of kyytiRows) {
+    const d = normDate(pick(r,["date","paivamaara"]));
+    const time = normalizeTime(pick(r,["departure_time","lahtoaika","time"]));
+    const reason = pick(r,["reason","syy"], "Kyyti / siirtymä");
+    const related = pick(r,["related_match","ottelu_id","match_id"]);
+    const fromId = pick(r,["from_place_id","mista_place_id"]);
+    const toId = pick(r,["to_place_id","minne_place_id"]);
+    const fromText = pick(r,["from_text","mista"]);
+    const toText = pick(r,["to_text","minne"]);
+    const key = [d, time, reason, related, fromId, fromText, toId, toText].join("|");
+    if (!kyytiGroups.has(key)) kyytiGroups.set(key, { type:"kyyti", date:d, time, reason, fromId, fromText, toId, toText, rows:[] });
+    kyytiGroups.get(key).rows.push(r);
+  }
+
+  kyytiGroups.forEach(g => {
+    const route = `${g.fromId ? placeText(g.fromId, g.fromText) : esc(g.fromText || "Lähtö tarkentuu")} → ${g.toId ? placeText(g.toId, g.toText) : esc(g.toText || "Määränpää tarkentuu")}`;
+    const cars = g.rows
+      .slice()
+      .sort((a,b) => pick(a,["car","auto"]).localeCompare(pick(b,["car","auto"]), "fi", { numeric:true }))
+      .map((r, idx) => {
+        const car = pick(r,["car","auto"], `Auto ${idx + 1}`);
+        const driver = pick(r,["driver","kuljettaja"]);
+        const passengers = pick(r,["passengers","matkustajat"]);
+        const seats = pick(r,["seats","paikkoja"]);
+        const notes = pick(r,["notes","lisatiedot"]);
+        const extra = [passengers ? "Matkustajat: " + esc(passengers) : "", seats ? "Paikkoja: " + esc(seats) : "", notes ? esc(notes) : ""].filter(Boolean).join(" · ");
+        return `<div style="margin-top:3px;"><strong>${esc(car)}:</strong> ${driver ? esc(driver) : '<span style="color:var(--red);font-weight:700;">❗ Avoin — ilmoittaudu!</span>'}${extra ? `<br><span style="color:var(--sub);">${extra}</span>` : ""}</div>`;
+      }).join("");
+    const sub = [route, cars].filter(Boolean).join("<br>");
+    cards.push({ date:g.date, time:g.time, sortTime:g.time, html:eventHtml({ time:g.time, icon:"🚗", color:"ic-blue", title:g.reason, sub }, g.rows.some(r => !pick(r,["driver","kuljettaja"])) ? "open" : "") });
+  });
+
+  cards.sort((a,b) => (a.date + (a.sortTime || "99:99")).localeCompare(b.date + (b.sortTime || "99:99")));
+
+  let last = "";
+  for (const c of cards) {
+    if (c.date !== last) {
+      last = c.date;
+      html += `<div class="section-title">${formatDate(c.date)}</div>`;
+    }
+    html += c.html;
+  }
+
+  if (!cards.length) html += `<p class="small-note">Talkoo- tai kyytitietoja ei vielä ole Google Sheetsissä.</p>`;
   list.innerHTML = html;
 }
 
