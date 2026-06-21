@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- version: minimal-no-info 2026-06-21 -->
 <!-- version: sheets-talkoot-kyydit-combined-v4 2026-06-21 -->
 <html lang="fi">
 <head>
@@ -141,7 +142,7 @@ const DATA_SOURCES = {
   saatavuus: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=212948974&single=true&output=csv",
   osoitteet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=518675820&single=true&output=csv",
   yhteystiedot: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=1844830324&single=true&output=csv",
-  info: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=1790598112&single=true&output=csv",};
+};
 
 let DATA = {};
 let SETTINGS = {};
@@ -157,7 +158,6 @@ const INFO_TAB_IDS = {
   ruoka: "ruoka",
   osoitteet: "osoitteet",
   yhteystiedot: "yhteystiedot",
-  info: "info",
   saa: "saa"
 };
 const WD = ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"];
@@ -445,7 +445,7 @@ function renderTabs() {
   });
   [
     [INFO_TAB_IDS.talkoot, "🙋 Talkoot"], [INFO_TAB_IDS.ruoka, "🍴 Ruoka"],
-    [INFO_TAB_IDS.osoitteet, "📍 Osoitteet"], [INFO_TAB_IDS.yhteystiedot, "📞 Yhteystiedot"], [INFO_TAB_IDS.info, "ℹ️ Info"],
+    [INFO_TAB_IDS.osoitteet, "📍 Osoitteet"], [INFO_TAB_IDS.yhteystiedot, "📞 Yhteystiedot"],
     [INFO_TAB_IDS.saa, "🌤️ Sää"]
   ].forEach(([id,label]) => {
     const b = document.createElement("button");
@@ -462,7 +462,6 @@ function renderEvents() {
   if (tab === INFO_TAB_IDS.ruoka) return renderRuokaTab();
   if (tab === INFO_TAB_IDS.osoitteet) return renderOsoitteetTab();
   if (tab === INFO_TAB_IDS.yhteystiedot) return renderYhteystiedotTab();
-  if (tab === INFO_TAB_IDS.info) return renderInfoTab();
   if (tab === INFO_TAB_IDS.saa) return renderWeatherTab();
   return renderDayTab();
 }
@@ -675,15 +674,6 @@ function renderYhteystiedotTab() {
   list.innerHTML = html || `<p class="small-note">Yhteystietoja ei vielä ole.</p>`;
 }
 
-function renderInfoTab() {
-  hideNext();
-  const list = document.getElementById("eventList");
-  let html = loadErrorsHtml() + `<p class="small-note">Tiedot luetaan Google Sheetsistä. Päivityksissä voi olla muutaman minuutin viive.</p>`;
-  visibleRows(DATA.info).forEach(r => {
-    html += eventHtml({ icon:pick(r,["icon","ikoni"],"ℹ️"), color:"ic-blue", title:pick(r,["title","otsikko"],"Info"), sub:esc(pick(r,["text","teksti","description","kuvaus"])) });
-  });
-  list.innerHTML = html;
-}
 
 async function fetchWeather() {
   const lat = parseNumberFi(SETTINGS.weather_lat, 64.913);
