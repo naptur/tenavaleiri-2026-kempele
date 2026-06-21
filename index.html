@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- version: sheets-no-players-weather-v3 2026-06-21 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -149,6 +150,7 @@ let DAYS = [];
 let selectedTab = null;
 let weatherData = null;
 let loadErrors = [];
+let weatherError = "";
 
 const INFO_TAB_IDS = {
   talkoot: "talkoot",
@@ -211,6 +213,10 @@ function isTrue(v) { return String(v || "").trim().toLowerCase() !== "false" && 
 function visibleRows(rows) { return (rows || []).filter(r => isTrue(r.visible)); }
 function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
 function pick(obj, keys, fallback="") { for (const k of keys) if (obj && obj[k] !== undefined && obj[k] !== "") return obj[k]; return fallback; }
+function parseNumberFi(v, fallback) {
+  const n = Number(String(v ?? "").trim().replace(",", "."));
+  return Number.isFinite(n) ? n : fallback;
+}
 
 async function loadCsv(name, url) {
   const bust = url.includes("?") ? "&cachebust=" : "?cachebust=";
@@ -608,21 +614,21 @@ function renderInfoTab() {
 }
 
 async function fetchWeather() {
-  const lat = Number(SETTINGS.weather_lat || "64.913");
-  const lon = Number(SETTINGS.weather_lon || "25.503");
+  const lat = parseNumberFi(SETTINGS.weather_lat, 64.913);
+  const lon = parseNumberFi(SETTINGS.weather_lon, 25.503);
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&wind_speed_unit=ms&timezone=Europe%2FHelsinki&forecast_days=16`;
     const res = await fetch(url);
     if (!res.ok) throw new Error("HTTP " + res.status);
-    weatherData = await res.json(); weatherData._fetched = new Date();
+    weatherData = await res.json(); weatherData._fetched = new Date(); weatherError = "";
     if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents();
-  } catch (e) { weatherData = null; if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); }
+  } catch (e) { weatherData = null; weatherError = e && e.message ? e.message : String(e); if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); }
 }
 function renderWeatherTab() {
   hideNext();
   const list = document.getElementById("eventList");
   let html = loadErrorsHtml();
-  if (!weatherData || !weatherData.hourly) { list.innerHTML = html + `<p class="small-note" style="text-align:center;margin-top:20px;">Sääennustetta haetaan... Jos viesti ei katoa, ennustepalveluun ei juuri nyt saada yhteyttä.</p>`; return; }
+  if (!weatherData || !weatherData.hourly) { list.innerHTML = html + `<p class="small-note" style="text-align:center;margin-top:20px;">Sääennustetta haetaan… Jos viesti ei katoa, sääpalveluun ei saada yhteyttä tai selain estää haun.<br><br><strong>Käytetyt koordinaatit:</strong> ${esc(String(parseNumberFi(SETTINGS.weather_lat, 64.913)))} / ${esc(String(parseNumberFi(SETTINGS.weather_lon, 25.503)))}${weatherError ? `<br><strong>Virhe:</strong> ${esc(weatherError)}` : ""}</p>`; return; }
   const H = weatherData.hourly, tk = todayKey(), nowH = nowFi().getHours(), showHours = [0,3,6,9,12,15,18,21], byDay = {};
   H.time.forEach((t,i) => {
     const [date, hm] = t.split("T"), hour = parseInt(hm.slice(0,2),10);
