@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<!-- version: minimal-no-info 2026-06-21 -->
-<!-- version: sheets-talkoot-kyydit-combined-v4 2026-06-21 -->
+<!-- version: sheets-talkoot-kyydit-combined-v5 2026-06-22 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -92,6 +91,7 @@
   .tag { display: inline-block; background: var(--now-border); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; vertical-align: middle; text-transform: uppercase; }
   .muted { color: var(--sub); }
   .error-box { background: var(--bad-bg); border: 1px solid #f0b5b5; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; color: #8a1111; font-size: 13px; line-height: 1.5; }
+  .stale-note { font-size: 11px; color: var(--sub); text-align: right; margin: -4px 4px 10px; }
   footer { text-align: center; font-size: 11px; color: #AAA; margin-top: 24px; }
 </style>
 </head>
@@ -127,6 +127,7 @@
     <div class="nb-sub" id="nbSub"></div>
     <div class="nb-countdown" id="nbCountdown"></div>
   </div>
+  <div id="dataStaleNote" class="stale-note" style="display:none;"></div>
   <div id="eventList"><p class="small-note" style="text-align:center;margin-top:20px;">Ladataan Google Sheets -tietoja...</p></div>
   <footer id="footerText">Tenavaleiri 2026</footer>
 </main>
@@ -139,10 +140,11 @@ const DATA_SOURCES = {
   ottelut: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=206681168&single=true&output=csv",
   talkoot: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=621423242&single=true&output=csv",
   kyydit: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=473439237&single=true&output=csv",
-  saatavuus: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=212948974&single=true&output=csv",
   osoitteet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=518675820&single=true&output=csv",
   yhteystiedot: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=1844830324&single=true&output=csv",
 };
+
+const DATA_REFRESH_MS = 2 * 60 * 1000; // Sheets-data päivittyy automaattisesti 2 min välein
 
 let DATA = {};
 let SETTINGS = {};
@@ -152,6 +154,8 @@ let selectedTab = null;
 let weatherData = null;
 let loadErrors = [];
 let weatherError = "";
+let lastDataLoadAt = null;
+let lastDataLoadFailed = false;
 
 const INFO_TAB_IDS = {
   talkoot: "talkoot",
@@ -227,12 +231,12 @@ async function loadCsv(name, url) {
 async function loadAllData() {
   const entries = Object.entries(DATA_SOURCES);
   const out = {};
-  loadErrors = [];
+  const errors = [];
   await Promise.all(entries.map(async ([name, url]) => {
     try { out[name] = await loadCsv(name, url); }
-    catch (err) { out[name] = []; loadErrors.push(err.message); }
+    catch (err) { out[name] = []; errors.push(err.message); }
   }));
-  return out;
+  return { out, errors };
 }
 
 function buildSettings() {
@@ -271,7 +275,7 @@ function buildDays() {
 }
 
 function mapLink(label, query) {
-  if (!query) return esc(label || "Paikka tarkentuu");
+  if (!query) return "📍 " + esc(label || "Paikka tarkentuu");
   const url = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(query);
   return `<a class="maplink" href="${url}" target="_blank" rel="noopener">📍 ${esc(label)}</a>`;
 }
@@ -284,12 +288,6 @@ function placeText(placeId, fallback="") {
   const label = addr ? `${name} (${addr})` : name;
   return mapLink(label, q);
 }
-function placePlain(placeId) {
-  const p = PLACES[placeId];
-  if (!p) return "";
-  return pick(p,["name","nimi"], placeId);
-}
-
 function normDate(v) {
   v = String(v || "").trim();
   if (!v) return "";
@@ -345,8 +343,8 @@ function getAutoDayIndex() {
   return tk < (DAYS[0]?.key || tk) ? 0 : Math.max(0, DAYS.length - 1);
 }
 function getCurrentTab() { return selectedTab !== null ? selectedTab : getAutoDayIndex(); }
-function colorClass(c, fallback="red") {
-  c = String(c || fallback).toLowerCase();
+function colorClass(c) {
+  c = String(c || "").toLowerCase();
   if (c.includes("green")) return "ic-green";
   if (c.includes("navy")) return "ic-navy";
   if (c.includes("blue")) return "ic-blue";
@@ -479,7 +477,9 @@ function renderDayTab() {
 }
 function renderNext(it) {
   const banner = document.getElementById("nextBanner");
-  if (!it || it.date !== todayKey()) { banner.classList.remove("visible"); return; }
+  // Piilota banneri, jos tapahtumaa ei ole, se ei ole tänään, tai sillä ei ole kelvollista alkamisaikaa
+  // (esim. tyhjä aika-sarake Sheetsissä laskisi muuten NaN-minuuttilaskurin).
+  if (!it || it.date !== todayKey() || toMin(it.time) === null) { banner.classList.remove("visible"); return; }
   document.getElementById("nbTitle").textContent = (it.time ? it.time + " — " : "") + it.title;
   document.getElementById("nbSub").innerHTML = it.sub || "";
   const mins = toMin(it.time) - minutesNow();
@@ -516,30 +516,6 @@ function renderRuokaTab() {
     html += eventHtml({ time, endTime, icon:pick(r,["icon","ikoni"],"🍴"), color:"ic-green", title:pick(r,["meal","ateria"],"Ruokailu"), sub:[esc(pick(r,["time","aika"])), placeText(pick(r,["place_id","paikka_id"])), esc(pick(r,["menu","ruokalista"])), esc(pick(r,["notes","lisatiedot"]))].filter(Boolean).join("<br>") });
   }
   list.innerHTML = html || `<p class="small-note">Ruokailutietoja ei vielä ole.</p>`;
-}
-
-function renderKyyditTab() {
-  hideNext();
-  const list = document.getElementById("eventList");
-  const rows = visibleRows(DATA.kyydit).sort((a,b) => (normDate(pick(a,["date","paivamaara"])) + pick(a,["departure_time","lahtoaika","time"])).localeCompare(normDate(pick(b,["date","paivamaara"])) + pick(b,["departure_time","lahtoaika","time"])));
-  let open = rows.filter(r => !pick(r,["driver","kuljettaja"])).length;
-  let html = loadErrorsHtml() + `<div class="${open ? "next-banner visible" : "event"}" style="display:block;margin-bottom:14px;"><div class="nb-label">Kyydit</div><div class="nb-title">Avoimia kuljettajia: ${open}</div><div class="nb-sub">Lisää ja päivitä kyydit Google Sheetsin Kyydit-välilehdellä.</div></div>`;
-  let last = "";
-  for (const r of rows) {
-    const d = normDate(pick(r,["date","paivamaara"]));
-    if (d !== last) { last = d; html += `<div class="section-title">${formatDate(d)}</div>`; }
-    const time = normalizeTime(pick(r,["departure_time","lahtoaika","time"]));
-    const fromId = pick(r,["from_place_id","mista_place_id"]), toId = pick(r,["to_place_id","minne_place_id"]);
-    const sub = [
-      "Lähtö: " + (fromId ? placeText(fromId, pick(r,["from_text","mista"])) : esc(pick(r,["from_text","mista"],"Tarkentuu"))),
-      "Määränpää: " + (toId ? placeText(toId, pick(r,["to_text","minne"])) : esc(pick(r,["to_text","minne"],"Tarkentuu"))),
-      pick(r,["driver","kuljettaja"]) ? "Kuljettaja: " + esc(pick(r,["driver","kuljettaja"])) : "Kuljettaja: ❗ avoin",
-      pick(r,["passengers","matkustajat"]) ? "Matkustajat: " + esc(pick(r,["passengers","matkustajat"])) : "",
-      pick(r,["notes","lisatiedot"]) ? esc(pick(r,["notes","lisatiedot"])) : ""
-    ].filter(Boolean).join("<br>");
-    html += eventHtml({ time, icon:"🚗", color:"ic-blue", title:pick(r,["reason","syy"],"Kyyti"), sub }, pick(r,["driver","kuljettaja"]) ? "" : "open");
-  }
-  list.innerHTML = html;
 }
 
 function renderTalkootTab() {
@@ -717,13 +693,35 @@ function renderClock() {
   const n = nowFi();
   document.getElementById("clock").textContent = `${["su","ma","ti","ke","to","pe","la"][n.getDay()]} ${n.getDate()}.${n.getMonth()+1}. klo ${String(n.getHours()).padStart(2,"0")}:${String(n.getMinutes()).padStart(2,"0")}`;
 }
-function render() { renderTabs(); renderEvents(); renderClock(); }
+function renderStaleNote() {
+  const el = document.getElementById("dataStaleNote");
+  if (!lastDataLoadAt) { el.style.display = "none"; return; }
+  const mins = Math.round((Date.now() - lastDataLoadAt.getTime()) / 60000);
+  const label = mins < 1 ? "alle minuutti sitten" : mins === 1 ? "1 min sitten" : `${mins} min sitten`;
+  el.textContent = (lastDataLoadFailed ? "⚠️ Tietoja ei saatu päivitettyä, näytetään viimeksi onnistuneet tiedot — " : "Tiedot päivitetty ") + label;
+  el.style.display = "block";
+}
+function render() { renderTabs(); renderEvents(); renderClock(); renderStaleNote(); }
+
+async function refreshData(isInitial) {
+  const { out, errors } = await loadAllData();
+  // Jos haku epäonnistuu kokonaan (esim. ei verkkoyhteyttä), pidetään aiemmin ladattu DATA voimassa
+  // sen sijaan, että näkymä tyhjentyisi virheellisesti.
+  const gotAnything = Object.values(out).some(rows => rows.length > 0);
+  if (isInitial || gotAnything || !Object.keys(DATA).length) {
+    DATA = out;
+    buildSettings(); buildPlaces(); buildDays();
+  }
+  loadErrors = errors;
+  lastDataLoadFailed = errors.length > 0;
+  lastDataLoadAt = new Date();
+  if (!isInitial) render();
+}
 
 async function init() {
   renderClock();
   try {
-    DATA = await loadAllData();
-    buildSettings(); buildPlaces(); buildDays();
+    await refreshData(true);
     selectedTab = getAutoDayIndex();
     render();
     fetchWeather();
@@ -734,7 +732,8 @@ async function init() {
 init();
 setInterval(renderClock, 1000);
 setInterval(fetchWeather, 60 * 60 * 1000);
-setInterval(() => { if (typeof getCurrentTab() === "number") render(); else renderClock(); }, 30000);
+setInterval(() => refreshData(false), DATA_REFRESH_MS);
+setInterval(() => { if (typeof getCurrentTab() === "number") render(); else { renderClock(); renderStaleNote(); } }, 30000);
 </script>
 </body>
 </html>
