@@ -50,6 +50,9 @@
   .info-tabs::-webkit-scrollbar { display: none; }
   .info-tab { flex: 1 0 auto; white-space: nowrap; padding: 10px 12px; text-align: center; color: rgba(255,255,255,0.7); font-weight: 600; font-size: 13px; cursor: pointer; border: none; background: transparent; border-bottom: 3px solid transparent; }
   .info-tab.active { color: #fff; border-bottom-color: #fff; background: rgba(255,255,255,0.08); }
+  @media (max-width: 430px) {
+    .info-tab { font-size: 12px; padding: 10px 10px; }
+  }
   main { max-width: 600px; margin: 0 auto; padding: 14px 12px; }
   .next-banner { background: var(--now-bg); border: 2px solid var(--now-border); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; display: none; }
   .next-banner.visible { display: block; }
@@ -58,15 +61,7 @@
   .next-banner .nb-sub { font-size: 13px; color: var(--sub); margin-top: 2px; line-height: 1.45; }
   .next-banner .nb-countdown { font-size: 13px; font-weight: 600; color: #A87800; margin-top: 4px; }
 
-  .weather-card { display: none; align-items: center; gap: 14px; background: linear-gradient(135deg, #2B5FA8, #4A86D4); color: #fff; border-radius: 12px; padding: 12px 16px; margin-bottom: 14px; }
-  .weather-card.visible { display: flex; }
-  .weather-card .w-emoji { font-size: 36px; line-height: 1; }
-  .weather-card .w-main { flex: 1; }
-  .weather-card .w-desc { font-size: 14px; font-weight: 700; }
-  .weather-card .w-temp { font-size: 13px; opacity: 0.95; margin-top: 2px; }
-  .weather-card .w-extra { font-size: 11.5px; opacity: 0.85; margin-top: 2px; }
-  .weather-card .w-updated { font-size: 10px; opacity: 0.7; text-align: right; }
-  .event, .addr-card { display: flex; align-items: flex-start; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+  .event, .addr-card { display: flex; align-items: flex-start; gap: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; transition: opacity .3s; }
   .event.past { opacity: 0.48; }
   .event.current { border: 2px solid var(--now-border); background: var(--now-bg); box-shadow: 0 2px 10px rgba(232,168,0,0.2); }
   .event.open { border-color: var(--now-border); background: var(--now-bg); }
@@ -111,16 +106,6 @@
 </div>
 
 <main>
-  <div class="weather-card" id="weatherCard">
-    <div class="w-emoji" id="wEmoji"></div>
-    <div class="w-main">
-      <div class="w-desc" id="wDesc"></div>
-      <div class="w-temp" id="wTemp"></div>
-      <div class="w-extra" id="wExtra"></div>
-    </div>
-    <div class="w-updated" id="wUpdated"></div>
-  </div>
-
   <div class="next-banner" id="nextBanner">
     <div class="nb-label">Seuraavaksi</div>
     <div class="nb-title" id="nbTitle"></div>
@@ -424,7 +409,22 @@ function dayItems(date) {
     ].filter(Boolean).join("<br>");
     items.push({ source:"kyyti", date:d, time, endTime:endDefault(time, 30), icon:"🚗", color:"ic-blue", title, sub });
   });
-  return items.sort((a,b) => (toMin(a.time) ?? 9999) - (toMin(b.time) ?? 9999));
+  items.sort((a,b) => (toMin(a.time) ?? 9999) - (toMin(b.time) ?? 9999));
+
+  // Laske status valmiiksi joka itemille. Ajattomille riveille (esim. "Saapuminen leirille",
+  // ei time-arvoa Sheetsissä) status johdetaan seuraavasta ajoitetusta tapahtumasta: jos
+  // seuraava ajoitettu tapahtuma on jo käynnissä tai ohi, ajaton rivi merkitään myös menneeksi.
+  items.forEach(it => { it.status = statusFor(it.date, it.time, it.endTime); });
+  for (let i = 0; i < items.length; i++) {
+    if (toMin(items[i].time) === null) {
+      let next = null;
+      for (let j = i + 1; j < items.length; j++) {
+        if (toMin(items[j].time) !== null) { next = items[j].status; break; }
+      }
+      items[i].status = (next === "past" || next === "current") ? "past" : (items[i].status || "");
+    }
+  }
+  return items;
 }
 
 function renderTabs() {
@@ -468,11 +468,11 @@ function renderDayTab() {
   const day = DAYS[getCurrentTab()] || DAYS[0];
   const list = document.getElementById("eventList");
   const items = dayItems(day.key);
-  const next = items.find(it => statusFor(it.date, it.time, it.endTime) === "future");
+  const next = items.find(it => it.status === "future");
   renderNext(next);
   let html = loadErrorsHtml();
   if (!items.length) html += `<p class="small-note">Tälle päivälle ei ole vielä tietoja Google Sheetsissä.</p>`;
-  for (const it of items) html += eventHtml(it, statusFor(it.date, it.time, it.endTime));
+  for (const it of items) html += eventHtml(it, it.status);
   list.innerHTML = html;
 }
 function renderNext(it) {
