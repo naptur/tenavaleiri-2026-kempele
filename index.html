@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: minimal-placeid-talkoot-in-matches-no-kyydit 2026-07-05 -->
+<!-- version: minimal-leiriohjelma-no-talkoot-ruoka-tabs 2026-07-05 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -91,6 +91,21 @@
   .tag { display: inline-block; background: var(--now-border); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; vertical-align: middle; text-transform: uppercase; }
   .muted { color: var(--sub); }
   .error-box { background: var(--bad-bg); border: 1px solid #f0b5b5; border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; color: #8a1111; font-size: 13px; line-height: 1.5; }
+
+  .program-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 14px; }
+  .program-title { text-align: center; color: #0B3D63; font-size: 24px; font-weight: 800; letter-spacing: .5px; margin: 4px 0 14px; text-transform: uppercase; }
+  .program-grid { display: grid; grid-template-columns: repeat(6, minmax(130px, 1fr)); border-top: 2px solid #8FA2FF; border-left: 2px solid #8FA2FF; min-width: 780px; }
+  .program-head { background: #CFD7FF; border-right: 2px solid #8FA2FF; border-bottom: 2px solid #8FA2FF; text-align: center; font-weight: 800; font-size: 12px; line-height: 1.25; padding: 10px 6px; text-transform: uppercase; }
+  .program-cell { border-right: 2px solid #8FA2FF; border-bottom: 2px solid #8FA2FF; min-height: 68px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px 7px; font-size: 13px; line-height: 1.25; white-space: pre-line; }
+  .program-time { font-weight: 500; display: block; margin-bottom: 2px; }
+  .program-main { font-weight: 650; }
+  .program-footnote { color: #0B3D63; font-size: 12px; font-style: italic; line-height: 1.45; margin: 10px 2px 2px; }
+  @media (max-width: 620px) {
+    .program-wrap { margin-left: -4px; margin-right: -4px; border-radius: 12px; padding: 10px 8px; }
+    .program-title { font-size: 21px; }
+    .program-grid { grid-template-columns: repeat(6, 128px); min-width: 768px; }
+    .program-cell { font-size: 12.5px; min-height: 66px; padding: 9px 6px; }
+  }
   footer { text-align: center; font-size: 11px; color: #AAA; margin-top: 24px; }
 </style>
 </head>
@@ -151,8 +166,7 @@ let loadErrors = [];
 let weatherError = "";
 
 const INFO_TAB_IDS = {
-  talkoot: "talkoot",
-  ruoka: "ruoka",
+  leiriohjelma: "leiriohjelma",
   osoitteet: "osoitteet",
   yhteystiedot: "yhteystiedot",
   saa: "saa"
@@ -467,7 +481,7 @@ function renderTabs() {
     dayCont.appendChild(b);
   });
   [
-    [INFO_TAB_IDS.talkoot, "🙋 Talkoot"], [INFO_TAB_IDS.ruoka, "🍴 Ruoka"],
+    [INFO_TAB_IDS.leiriohjelma, "📋 Leiriohjelma"],
     [INFO_TAB_IDS.osoitteet, "📍 Osoitteet"], [INFO_TAB_IDS.yhteystiedot, "📞 Yhteystiedot"],
     [INFO_TAB_IDS.saa, "🌤️ Sää"]
   ].forEach(([id,label]) => {
@@ -481,8 +495,7 @@ function renderTabs() {
 
 function renderEvents() {
   const tab = getCurrentTab();
-  if (tab === INFO_TAB_IDS.talkoot) return renderTalkootTab();
-  if (tab === INFO_TAB_IDS.ruoka) return renderRuokaTab();
+  if (tab === INFO_TAB_IDS.leiriohjelma) return renderLeiriohjelmaTab();
   if (tab === INFO_TAB_IDS.osoitteet) return renderOsoitteetTab();
   if (tab === INFO_TAB_IDS.yhteystiedot) return renderYhteystiedotTab();
   if (tab === INFO_TAB_IDS.saa) return renderWeatherTab();
@@ -523,6 +536,81 @@ function eventHtml(it, status="") {
 function loadErrorsHtml() {
   if (!loadErrors.length) return "";
   return `<div class="error-box"><strong>Huom:</strong> kaikkia Google Sheets -välilehtiä ei saatu ladattua.<br>${esc(loadErrors.join(" | "))}</div>`;
+}
+
+function programRowDate(r) {
+  return normDate(pick(r,["date","paivamaara"])) || parseDateTime(pick(r,["paivamaara","date"])).date;
+}
+function programRowTime(r) {
+  return normalizeTime(pick(r,["time","aika","start_time","alkuaika"])) || parseDateTime(pick(r,["paivamaara","date"])).time;
+}
+function programRowEndTime(r) {
+  return normalizeTime(pick(r,["end_time","loppuaika"]));
+}
+function programSortValue(r, idx) {
+  const order = Number(String(pick(r,["order","jarjestys","sort_order"])).replace(",", "."));
+  if (Number.isFinite(order)) return order * 10000 + idx;
+  const t = toMin(programRowTime(r));
+  return (t === null ? 9999 : t) * 100 + idx;
+}
+function programCellText(row) {
+  const time = programRowTime(row);
+  const end = programRowEndTime(row);
+  const rawTime = pick(row,["time","aika"]);
+  const title = pick(row,["title","otsikko","meal","ateria"], "Ohjelma");
+  const desc = pick(row,["description","kuvaus","notes","lisatiedot"]);
+  const shownTime = rawTime || (time ? (end ? `${time}-${end}` : time) : "");
+  return { time: shownTime, title, desc };
+}
+function leiriohjelmaRows() {
+  const out = [];
+  const seen = new Set();
+  visibleRows(DATA.ohjelma).forEach((r, i) => {
+    const d = programRowDate(r);
+    if (!d) return;
+    const key = [d, programRowTime(r), pick(r,["title","otsikko"])].join("|").toLowerCase();
+    seen.add(key);
+    out.push({ row:r, idx:i, date:d });
+  });
+  visibleRows(DATA.ruokailut).forEach((r, i) => {
+    const d = normDate(pick(r,["date","paivamaara"]));
+    if (!d) return;
+    const meal = pick(r,["meal","ateria"],"Ruokailu");
+    const key = [d, normalizeTime(pick(r,["start_time","alkuaika"])), meal].join("|").toLowerCase();
+    if (seen.has(key)) return;
+    out.push({ row:{...r, title:meal, time:pick(r,["time","aika"]), start_time:pick(r,["start_time","alkuaika"]), end_time:pick(r,["end_time","loppuaika"])}, idx:10000+i, date:d });
+  });
+  return out;
+}
+function renderLeiriohjelmaTab() {
+  hideNext();
+  const list = document.getElementById("eventList");
+  const days = DAYS.length ? DAYS : ["2026-07-13","2026-07-14","2026-07-15","2026-07-16","2026-07-17","2026-07-18"].map(date => {
+    const d = new Date(date + "T12:00:00");
+    return { key:date, label:WD[d.getDay()], dateLabel:`${d.getDate()}.${d.getMonth()+1}.` };
+  });
+  const byDay = {};
+  days.forEach(d => byDay[d.key] = []);
+  leiriohjelmaRows().forEach(item => { if (byDay[item.date]) byDay[item.date].push(item); });
+  Object.keys(byDay).forEach(date => byDay[date].sort((a,b) => programSortValue(a.row,a.idx) - programSortValue(b.row,b.idx)));
+  const maxRows = Math.max(1, ...Object.values(byDay).map(a => a.length));
+  let html = loadErrorsHtml();
+  html += `<div class="program-wrap"><div class="program-title">Leiriohjelma</div><div class="program-grid">`;
+  days.forEach(d => {
+    const dt = new Date(d.key + "T12:00:00");
+    const wd = ["SUNNUNTAI","MAANANTAI","TIISTAI","KESKIVIIKKO","TORSTAI","PERJANTAI","LAUANTAI"][dt.getDay()];
+    html += `<div class="program-head">${wd}<br>${dt.getDate()}.${dt.getMonth()+1}.${dt.getFullYear()}</div>`;
+  });
+  for (let i = 0; i < maxRows; i++) {
+    days.forEach(d => {
+      const item = byDay[d.key][i];
+      if (!item) { html += `<div class="program-cell"></div>`; return; }
+      const c = programCellText(item.row);
+      html += `<div class="program-cell">${c.time ? `<span class="program-time">${esc(c.time)}</span>` : ""}<span class="program-main">${esc(c.title)}</span>${c.desc ? `<br>${esc(c.desc)}` : ""}</div>`;
+    });
+  }
+  html += `</div><div class="program-footnote">${esc(SETTINGS.program_note || SETTINGS.leiriohjelma_note || "*-Ruokailuilla on parin tunnin slotit ja ne voivat olla otteluiden kanssa päällekkäin. Huolehditaan, että kaikki käyvät syömässä.")}</div></div>`;
+  list.innerHTML = html;
 }
 
 function renderRuokaTab() {
