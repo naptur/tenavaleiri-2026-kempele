@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: minimal-leiriohjelma-no-talkoot-ruoka-tabs 2026-07-05 -->
+<!-- version: ohjelma-master-dedup-ruokailut 2026-07-06 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -78,6 +78,7 @@
   .ic-navy { background: var(--navy); }
   .ic-darkred { background: var(--darkred); }
   .ic-blue { background: var(--blue); }
+  .ic-transfer { background: #6B7280; }
   .ev-body { flex: 1; min-width: 0; }
   .ev-time { font-size: 12px; font-weight: 700; color: var(--red); margin-bottom: 1px; }
   .ev-title { font-size: 15px; font-weight: 700; line-height: 1.35; }
@@ -149,7 +150,6 @@
 const DATA_SOURCES = {
   asetukset: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=66064090&single=true&output=csv",
   ohjelma: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=1013125880&single=true&output=csv",
-  ruokailut: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=1535982202&single=true&output=csv",
   ottelut: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=206681168&single=true&output=csv",
   talkoot: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=621423242&single=true&output=csv",
   osoitteet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=518675820&single=true&output=csv",
@@ -271,7 +271,6 @@ function buildPlaces() {
 function buildDays() {
   const dates = new Set();
   for (const r of visibleRows(DATA.ohjelma)) if (normDate(pick(r,["date","paivamaara"]))) dates.add(normDate(pick(r,["date","paivamaara"])));
-  for (const r of visibleRows(DATA.ruokailut)) if (normDate(pick(r,["date","paivamaara"]))) dates.add(normDate(pick(r,["date","paivamaara"])));
   for (const r of visibleRows(DATA.ottelut)) { const p = parseDateTime(pick(r,["paivamaara","date"])); if (p.date) dates.add(p.date); }
   if (!dates.size) ["2026-07-13","2026-07-14","2026-07-15","2026-07-16","2026-07-17","2026-07-18"].forEach(d => dates.add(d));
   DAYS = Array.from(dates).sort().map(date => {
@@ -300,36 +299,109 @@ function placePlain(placeId) {
   return pick(p,["name","nimi"], placeId);
 }
 
+function idKey(v) {
+  return String(v || "").trim().toLowerCase();
+}
 function matchIdOf(r) {
   return pick(r, ["match_id", "ottelu_id", "id"]);
 }
 function matchInfoById(matchId) {
-  if (!matchId) return null;
-  return visibleRows(DATA.ottelut).map(matchInfo).find(m => m.matchId === matchId) || null;
+  const key = idKey(matchId);
+  if (!key) return null;
+  return visibleRows(DATA.ottelut).map(matchInfo).find(m => idKey(m.matchId) === key) || null;
+}
+function isOwnTeamName(name) {
+  const n = String(name || "").toLowerCase();
+  const team = String(SETTINGS.team_match_name || SETTINGS.team_name || "Manse PP").toLowerCase();
+  const candidates = [team, "manse pp", "manse pp, tampere"].filter(Boolean);
+  return candidates.some(c => n.includes(c));
+}
+function expectedTalkooRolesForMatch(m) {
+  if (!m) return [];
+  if (isOwnTeamName(m.home)) return ["Kirjuri", "2-tuomari", "Takarajatuomari"];
+  if (isOwnTeamName(m.away)) return ["Tulostaulu", "3-tuomari"];
+  return [];
+}
+function roleKey(v) {
+  return String(v || "").trim().toLowerCase()
+    .replace(/ä/g,"a").replace(/ö/g,"o").replace(/å/g,"a")
+    .replace(/[^a-z0-9]+/g,"");
+}
+function normText(v) {
+  return String(v || "").trim().toLowerCase()
+    .replace(/[–—]/g,"-")
+    .replace(/\s+-\s+/g,"-")
+    .replace(/\s+/g," ");
+}
+function splitMatchText(matchText) {
+  const txt = String(matchText || "").trim();
+  if (!txt) return ["", ""];
+  const parts = txt.split(/\s+[–—-]\s+/);
+  return parts.length >= 2 ? [parts[0].trim(), parts.slice(1).join(" - ").trim()] : ["", ""];
+}
+function syntheticMatchId(date, time, matchText) {
+  const base = [date, String(time || "").replace(/:/g, ""), roleKey(matchText).slice(0, 48)].filter(Boolean).join("-");
+  return base || "ottelu";
+}
+function taskBelongsToMatch(row, matchId, matchObj=null) {
+  const mid = idKey(matchId);
+  const rowMatch = idKey(pick(row,["match_id","ottelu_id"]));
+  if (mid && rowMatch === mid) return true;
+  const tid = idKey(pick(row,["task_id","talkoo_id","id"]));
+  if (mid && tid.startsWith(mid + "-")) return true;
+
+  // Fallback: nykyisessä Talkoot-taulukossa voi olla vain date + time + match.
+  // Tällöin yhdistetään talkoorivi otteluun näillä tiedoilla.
+  if (matchObj) {
+    const rowDate = normDate(pick(row,["date","paivamaara"]));
+    const rowTime = normalizeTime(pick(row,["time","aika"]));
+    const rowText = pick(row,["match","ottelu"]);
+    const sameDate = !rowDate || rowDate === matchObj.date;
+    const sameTime = !rowTime || rowTime === matchObj.time;
+    const sameText = !rowText || normText(rowText) === normText(matchObj.match);
+    if (sameDate && sameTime && sameText) return true;
+  }
+  return false;
 }
 function matchInfo(r) {
-  const parsed = parseDateTime(pick(r,["paivamaara","date"]));
+  const parsed = parseDateTime(pick(r,["paivamaara","datetime","date"]));
   const date = parsed.date || normDate(pick(r,["date","paivamaara"]));
   const time = parsed.time || normalizeTime(pick(r,["time","aika"]));
   const endTime = normalizeTime(pick(r,["end_time","loppuaika"])) || endDefault(time, 75);
-  const home = pick(r,["kotijoukkue","home_team"]);
-  const away = pick(r,["vierasjoukkue","away_team"]);
+  const rawMatch = pick(r,["match","ottelu"],"");
+  const [mh, ma] = splitMatchText(rawMatch);
+  const home = pick(r,["kotijoukkue","home_team"]) || mh;
+  const away = pick(r,["vierasjoukkue","away_team"]) || ma;
   const result = pick(r,["tulos","result"]);
   const placeId = pick(r,["place_id","paikka_id"]);
   const stadium = pick(r,["stadion","stadium"]);
   const address = pick(r,["osoite","address"]);
   const notes = pick(r,["lisatiedot","notes"]);
-  const match = [home, away].filter(Boolean).join(" – ") || pick(r,["match","ottelu"],"Ottelu");
-  return { matchId: matchIdOf(r), date, time, endTime, home, away, result, placeId, stadium, address, notes, match };
+  const match = [home, away].filter(Boolean).join(" – ") || rawMatch || "Ottelu";
+  const explicitId = matchIdOf(r);
+  const matchId = explicitId || syntheticMatchId(date, time, match);
+  return { matchId, date, time, endTime, home, away, result, placeId, stadium, address, notes, match };
 }
 function placeHtmlForMatch(m) {
   if (m.placeId) return placeText(m.placeId);
   if (m.stadium || m.address) return mapLink(m.stadium || m.address, [m.stadium, m.address].filter(Boolean).join(", "));
   return "";
 }
-function talkootForMatch(matchId) {
-  if (!matchId) return [];
-  return visibleRows(DATA.talkoot).filter(r => pick(r,["match_id","ottelu_id"]) === matchId);
+function talkootForMatch(matchId, matchObj=null) {
+  if (!matchId && !matchObj) return [];
+  const actual = visibleRows(DATA.talkoot).filter(r => taskBelongsToMatch(r, matchId, matchObj));
+  const m = matchObj || matchInfoById(matchId);
+  const expected = expectedTalkooRolesForMatch(m);
+  if (!expected.length) return actual;
+
+  const out = [...actual];
+  const existing = new Set(actual.map(r => roleKey(pick(r,["role","rooli"]))));
+  for (const role of expected) {
+    if (!existing.has(roleKey(role))) {
+      out.push({ match_id: matchId, role, person: "", notes: "", visible: "TRUE", _generated: "TRUE" });
+    }
+  }
+  return out;
 }
 function talkooLinesHtml(rows, showOpenAs="N.N.") {
   return rows.map(r => {
@@ -379,6 +451,18 @@ function toMin(hhmm) {
   if (!m) return null;
   return Number(m[1])*60 + Number(m[2]);
 }
+function minToTime(mins) {
+  if (mins === null || mins === undefined || !Number.isFinite(mins)) return "";
+  mins = ((Math.round(mins) % 1440) + 1440) % 1440;
+  return `${String(Math.floor(mins/60)).padStart(2,"0")}:${String(mins%60).padStart(2,"0")}`;
+}
+function sortDayItems(items) {
+  return [...items].sort((a,b) => {
+    const d = (toMin(a.time) ?? 9999) - (toMin(b.time) ?? 9999);
+    if (d) return d;
+    return (a._sortOffset || 0) - (b._sortOffset || 0);
+  });
+}
 function statusFor(date, time, endTime) {
   if (date !== todayKey()) return todayKey() > date ? "past" : "";
   const start = toMin(time); if (start === null) return "";
@@ -403,6 +487,25 @@ function colorClass(c, fallback="red") {
   if (c.includes("dark")) return "ic-darkred";
   return "ic-red";
 }
+function typeKey(row) {
+  return String(pick(row,["type","tyyppi"],"")).trim().toLowerCase();
+}
+function defaultIconForType(t) {
+  t = String(t || "").toLowerCase();
+  if (t.includes("ruoka") || t.includes("aami") || t.includes("lounas") || t.includes("päiv") || t.includes("paiv") || t.includes("iltapala")) return "🍴";
+  if (t.includes("siirty")) return "🚐";
+  if (t.includes("hilj")) return "🌙";
+  if (t.includes("saap")) return "ℹ️";
+  if (t.includes("ohjel") || t.includes("disco") || t.includes("palaver")) return "ℹ️";
+  return "ℹ️";
+}
+function defaultColorForType(t) {
+  t = String(t || "").toLowerCase();
+  if (t.includes("ruoka") || t.includes("aami") || t.includes("lounas") || t.includes("päiv") || t.includes("paiv") || t.includes("iltapala")) return "green";
+  if (t.includes("siirty")) return "blue";
+  if (t.includes("hilj")) return "navy";
+  return "red";
+}
 function hasRealMatchOnDate(date) {
   return visibleRows(DATA.ottelut).some(r => matchInfo(r).date === date);
 }
@@ -421,6 +524,7 @@ function placeHtmlFromRow(r) {
 
 function dayItems(date) {
   const items = [];
+  const seenProgram = new Set();
   visibleRows(DATA.ohjelma).forEach(r => {
     const d = normDate(pick(r,["date","paivamaara"]));
     if (d !== date) return;
@@ -429,26 +533,22 @@ function dayItems(date) {
     const endTime = normalizeTime(pick(r,["end_time","loppuaika"]));
     const placeId = pick(r,["place_id","paikka_id"]);
     const desc = pick(r,["description","kuvaus","lisatiedot"]);
+    const t = typeKey(r);
+    const title = pick(r,["title","otsikko"],"Ohjelma");
+
+    // Suojaa päällekkäisiltä riveiltä, jos sama ruokailu/ohjelmarivi on vahingossa
+    // mukana sekä vanhassa lähdedatassa että uudessa Ohjelma-välilehdessä.
+    const dedupeKey = [d, time, endTime, roleKey(t), roleKey(title), placeId].join("|");
+    if (seenProgram.has(dedupeKey)) return;
+    seenProgram.add(dedupeKey);
+
+    const icon = pick(r,["icon","ikoni"],"") || defaultIconForType(t || title);
+    const color = pick(r,["color","vari"],"") || defaultColorForType(t || title);
     items.push({
-      source:"ohjelma", date:d, time, endTime, icon: pick(r,["icon","ikoni"],"ℹ️"),
-      color: colorClass(pick(r,["color","vari"],"red")), accent: isTrue(pick(r,["accent","korostus"],"false")),
-      title: pick(r,["title","otsikko"],"Ohjelma"),
+      source:"ohjelma", date:d, time, endTime, placeId, icon,
+      color: colorClass(color), accent: isTrue(pick(r,["accent","korostus"],"false")),
+      title,
       sub: [placeText(placeId), esc(desc)].filter(Boolean).join("<br>")
-    });
-  });
-  visibleRows(DATA.ruokailut).forEach(r => {
-    const d = normDate(pick(r,["date","paivamaara"]));
-    if (d !== date) return;
-    const time = normalizeTime(pick(r,["start_time","alkuaika"]));
-    const endTime = normalizeTime(pick(r,["end_time","loppuaika"]));
-    const displayTime = pick(r,["time","aika"]);
-    const placeId = pick(r,["place_id","paikka_id"]);
-    const menu = pick(r,["menu","ruokalista"]);
-    const notes = pick(r,["notes","lisatiedot"]);
-    items.push({
-      source:"ruokailu", date:d, time, endTime, icon: pick(r,["icon","ikoni"],"🍴"), color:"ic-green",
-      title: pick(r,["meal","ateria"],"Ruokailu"),
-      sub: [`${esc(displayTime)}`, placeText(placeId), esc(menu), esc(notes)].filter(Boolean).join("<br>")
     });
   });
   visibleRows(DATA.ottelut).forEach(r => {
@@ -459,11 +559,11 @@ function dayItems(date) {
     const place = placeHtmlForMatch(m);
     if (place) subParts.push(place);
     if (m.notes) subParts.push(esc(m.notes));
-    const roles = talkootForMatch(m.matchId);
+    const roles = talkootForMatch(m.matchId, m);
     if (roles.length) subParts.push(talkooLinesHtml(roles, "N.N."));
-    items.push({ source:"ottelu", date:m.date, time:m.time, endTime:m.endTime, icon:"⚾", color:"ic-red", accent:true, title:m.match, sub:subParts.join("<br>") });
+    items.push({ source:"ottelu", date:m.date, time:m.time, endTime:m.endTime, placeId:m.placeId, icon:"⚾", color:"ic-red", accent:true, title:m.match, sub:subParts.join("<br>") });
   });
-  return items.sort((a,b) => (toMin(a.time) ?? 9999) - (toMin(b.time) ?? 9999));
+  return sortDayItems(items);
 }
 
 function renderTabs() {
@@ -557,28 +657,17 @@ function programCellText(row) {
   const time = programRowTime(row);
   const end = programRowEndTime(row);
   const rawTime = pick(row,["time","aika"]);
-  const title = pick(row,["title","otsikko","meal","ateria"], "Ohjelma");
+  const title = pick(row,["title","otsikko"], pick(row,["type","tyyppi"], "Ohjelma"));
   const desc = pick(row,["description","kuvaus","notes","lisatiedot"]);
   const shownTime = rawTime || (time ? (end ? `${time}-${end}` : time) : "");
   return { time: shownTime, title, desc };
 }
 function leiriohjelmaRows() {
   const out = [];
-  const seen = new Set();
   visibleRows(DATA.ohjelma).forEach((r, i) => {
     const d = programRowDate(r);
     if (!d) return;
-    const key = [d, programRowTime(r), pick(r,["title","otsikko"])].join("|").toLowerCase();
-    seen.add(key);
     out.push({ row:r, idx:i, date:d });
-  });
-  visibleRows(DATA.ruokailut).forEach((r, i) => {
-    const d = normDate(pick(r,["date","paivamaara"]));
-    if (!d) return;
-    const meal = pick(r,["meal","ateria"],"Ruokailu");
-    const key = [d, normalizeTime(pick(r,["start_time","alkuaika"])), meal].join("|").toLowerCase();
-    if (seen.has(key)) return;
-    out.push({ row:{...r, title:meal, time:pick(r,["time","aika"]), start_time:pick(r,["start_time","alkuaika"]), end_time:pick(r,["end_time","loppuaika"])}, idx:10000+i, date:d });
   });
   return out;
 }
@@ -613,21 +702,7 @@ function renderLeiriohjelmaTab() {
   list.innerHTML = html;
 }
 
-function renderRuokaTab() {
-  hideNext();
-  const list = document.getElementById("eventList");
-  let html = loadErrorsHtml();
-  const rows = visibleRows(DATA.ruokailut).sort((a,b) => (normDate(pick(a,["date","paivamaara"])) + pick(a,["start_time","alkuaika","time"])).localeCompare(normDate(pick(b,["date","paivamaara"])) + pick(b,["start_time","alkuaika","time"])));
-  let last = "";
-  for (const r of rows) {
-    const d = normDate(pick(r,["date","paivamaara"]));
-    if (d !== last) { last = d; html += `<div class="section-title">${formatDate(d)}</div>`; }
-    const time = normalizeTime(pick(r,["start_time","alkuaika"]));
-    const endTime = normalizeTime(pick(r,["end_time","loppuaika"]));
-    html += eventHtml({ time, endTime, icon:pick(r,["icon","ikoni"],"🍴"), color:"ic-green", title:pick(r,["meal","ateria"],"Ruokailu"), sub:[esc(pick(r,["time","aika"])), placeText(pick(r,["place_id","paikka_id"])), esc(pick(r,["menu","ruokalista"])), esc(pick(r,["notes","lisatiedot"]))].filter(Boolean).join("<br>") });
-  }
-  list.innerHTML = html || `<p class="small-note">Ruokailutietoja ei vielä ole.</p>`;
-}
+/* Ruoka-välilehti poistettu: ruokailut tulevat vain Ohjelma-välilehdeltä. */
 
 function renderTalkootTab() {
   hideNext();
