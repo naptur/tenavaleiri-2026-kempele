@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: normalized-sheets-contact-links-2026-07-07 -->
+<!-- version: settings-driven-sources-2026-07-07 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -33,21 +33,23 @@
 <main><div class="next-banner" id="nextBanner"><div class="nb-label">Seuraavaksi</div><div class="nb-title" id="nbTitle"></div><div class="nb-sub" id="nbSub"></div><div class="nb-countdown" id="nbCountdown"></div></div><div id="eventList"><p class="small-note" style="text-align:center;margin-top:20px;">Ladataan Google Sheets -tietoja...</p></div><footer id="footerText">Tenavaleiri 2026</footer></main>
 <script>
 const DATA_SOURCES = {
+  // Asetukset on ainoa koodiin kiinnitetty CSV-lähde.
+  // Muut välilehdet luetaan Asetukset-välilehden *_csv_url-avaimista.
   asetukset: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=66064090&single=true&output=csv",
-  ohjelma: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=1013125880&single=true&output=csv",
+  ohjelma: "",
   ruokailut: "",
   siirtymat: "",
-  ottelut: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=206681168&single=true&output=csv",
-  talkoot: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=621423242&single=true&output=csv",
-  osoitteet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=518675820&single=true&output=csv",
-  yhteystiedot: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=1844830324&single=true&output=csv"
+  ottelut: "",
+  talkoot: "",
+  osoitteet: "",
+  yhteystiedot: ""
 };
 const INFO_TAB_IDS = { osoitteet:"osoitteet", yhteystiedot:"yhteystiedot", saa:"saa" };
 const WD = ["Su","Ma","Ti","Ke","To","Pe","La"];
 const WD_LONG = ["SUNNUNTAI","MAANANTAI","TIISTAI","KESKIVIIKKO","TORSTAI","PERJANTAI","LAUANTAI"];
 const WMO = {0:["☀️","Selkeää"],1:["🌤️","Enimmäkseen selkeää"],2:["⛅","Puolipilvistä"],3:["☁️","Pilvistä"],45:["🌫️","Sumua"],48:["🌫️","Sumua"],51:["🌦️","Tihkusadetta"],53:["🌦️","Tihkusadetta"],55:["🌦️","Tihkusadetta"],61:["🌧️","Heikkoa sadetta"],63:["🌧️","Sadetta"],65:["🌧️","Voimakasta sadetta"],71:["❄️","Lumisadetta"],73:["❄️","Lumisadetta"],75:["❄️","Lumisadetta"],80:["🌦️","Sadekuuroja"],81:["🌦️","Sadekuuroja"],82:["🌧️","Voimakkaita kuuroja"],95:["⛈️","Ukkosta"]};
 
-let DATA = {}, SETTINGS = {}, PLACES = {}, IDX = {}, DAYS = [], selectedTab = null, weatherData = null, weatherError = "", loadErrors = [], dataWarnings = [];
+let DATA = {}, SETTINGS = {}, PLACES = {}, IDX = {}, DAYS = [], selectedTab = null, weatherData = null, weatherError = "", loadErrors = [], dataWarnings = [], sourceStatus = {};
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 const isTrue = v => String(v ?? "").trim().toLowerCase() !== "false" && String(v ?? "").trim() !== "0";
@@ -75,29 +77,47 @@ function parseCsv(text) {
   return rows.filter(r => r.some(v => String(v || "").trim())).map(r => Object.fromEntries(headers.map((h,i) => [h, String(r[i] || "").trim()])));
 }
 async function loadCsv(name, url) {
+  url = String(url || "").trim();
+  if (!url) return [];
   const sep = url.includes("?") ? "&" : "?";
   const res = await fetch(url + sep + "cachebust=" + Date.now(), { cache:"no-store" });
   if (!res.ok) throw new Error(name + ": HTTP " + res.status);
   return parseCsv(await res.text());
 }
+function settingUrl(settings, name, fallback="") {
+  const n = normKey(name);
+  const keys = [
+    `${n}_csv_url`, `csv_${n}`, `data_source_${n}`, `${n}_url`,
+    `csv_url_${n}`, `google_sheet_${n}`, `googlesheet_${n}`
+  ];
+  for (const k of keys) if (settings[k]) return settings[k];
+  return fallback || "";
+}
 async function loadAllData() {
   loadErrors = [];
-  const urls = { ...DATA_SOURCES };
+  sourceStatus = {};
+  const defaultUrls = { ...DATA_SOURCES };
   let asetuksetRows = [];
-  if (urls.asetukset) {
-    try { asetuksetRows = await loadCsv("asetukset", urls.asetukset); }
-    catch (err) { loadErrors.push(err.message); asetuksetRows = []; }
+  if (defaultUrls.asetukset) {
+    try { asetuksetRows = await loadCsv("asetukset", defaultUrls.asetukset); sourceStatus.asetukset = "ok"; }
+    catch (err) { loadErrors.push(err.message); sourceStatus.asetukset = "error"; asetuksetRows = []; }
   }
-  const tmpSettings = Object.fromEntries(asetuksetRows.map(r => [pick(r,["key","avain"]), pick(r,["value","arvo"])]).filter(([k]) => k));
-  Object.keys(urls).forEach(name => {
-    urls[name] = urls[name] || tmpSettings[`${name}_csv_url`] || tmpSettings[`csv_${name}`] || tmpSettings[`data_source_${name}`] || "";
-  });
-  const entries = await Promise.all(Object.entries(urls).filter(([name]) => name !== "asetukset").map(async ([name,url]) => {
+  const tmpSettings = Object.fromEntries(asetuksetRows.map(r => [normKey(pick(r,["key","avain"])), pick(r,["value","arvo"])]).filter(([k]) => k));
+
+  // Asetukset-välilehti ohjaa kaikkia muita lähteitä. Näin välilehden
+  // uudelleenjulkaisu tai gid-muutos korjataan jatkossa päivittämällä vain Google Sheetsiä.
+  const sourceNames = ["ohjelma","ruokailut","siirtymat","ottelut","talkoot","osoitteet","yhteystiedot"];
+  const urls = Object.fromEntries(sourceNames.map(name => [name, settingUrl(tmpSettings, name, "")]));
+
+  const entries = await Promise.all(sourceNames.map(async name => {
+    const url = urls[name];
     try {
-      if (!url) return [name, []];
-      return [name, await loadCsv(name,url)];
+      if (!url) { sourceStatus[name] = "missing"; return [name, []]; }
+      const rows = await loadCsv(name, url);
+      sourceStatus[name] = "ok";
+      return [name, rows];
     }
-    catch (err) { loadErrors.push(err.message); return [name, []]; }
+    catch (err) { loadErrors.push(err.message); sourceStatus[name] = "error"; return [name, []]; }
   }));
   DATA = { asetukset: asetuksetRows, ...Object.fromEntries(entries) };
 }
@@ -189,6 +209,9 @@ function mealById(id) { return IDX.mealsById?.get(idKey(id)) || null; }
 function routeByPlaces(start, end) { return IDX.routesByKey?.get(routeKey(start,end)) || null; }
 function addWarn(msg) { if (msg && !dataWarnings.includes(msg)) dataWarnings.push(msg); }
 function validateData() {
+  const placesAvailable = sourceStatus.osoitteet === "ok" && Object.keys(PLACES).length > 0;
+  const mealsAvailable = sourceStatus.ruokailut === "ok";
+  const routesAvailable = sourceStatus.siirtymat === "ok";
   IDX.ohjelma.forEach(r => {
     const row = pick(r,["program_id","id","title","otsikko"],"Ohjelma-rivi");
     const type = String(pick(r,["type","tyyppi"])).toLowerCase();
@@ -196,12 +219,12 @@ function validateData() {
     const placeId = pick(r,["place_id","paikka_id"]);
     const start = pick(r,["start_destination","lahtopaikka"]);
     const end = pick(r,["end_destination","maarapaikka"]) || placeId;
-    if (placeId && placeId !== "TÄYDENNÄ" && !PLACES[placeId]) addWarn(`Tuntematon place_id Ohjelmassa: ${placeId} (${row})`);
-    if (type.includes("ruokail") && ref && !mealById(ref)) addWarn(`Ruokailun ref_id ei löydy Ruokailut-välilehdeltä: ${ref}`);
-    if (type.includes("siirty") && start && end && start !== "TÄYDENNÄ" && end !== "TÄYDENNÄ" && !routeByPlaces(start,end)) addWarn(`Siirtymän ajoaika puuttuu: ${start} → ${end}`);
+    if (placesAvailable && placeId && placeId !== "TÄYDENNÄ" && !PLACES[placeId]) addWarn(`Tuntematon place_id Ohjelmassa: ${placeId} (${row})`);
+    if (mealsAvailable && type.includes("ruokail") && ref && !mealById(ref)) addWarn(`Ruokailun ref_id ei löydy Ruokailut-välilehdeltä: ${ref}`);
+    if (routesAvailable && type.includes("siirty") && start && end && start !== "TÄYDENNÄ" && end !== "TÄYDENNÄ" && !routeByPlaces(start,end)) addWarn(`Siirtymän ajoaika puuttuu: ${start} → ${end}`);
   });
   IDX.ottelut.forEach(m => {
-    if (m.placeId && m.placeId !== "?" && m.placeId !== "TÄYDENNÄ" && !PLACES[m.placeId]) addWarn(`Tuntematon place_id Otteluissa: ${m.placeId} (${m.matchId || m.match})`);
+    if (placesAvailable && m.placeId && m.placeId !== "?" && m.placeId !== "TÄYDENNÄ" && !PLACES[m.placeId]) addWarn(`Tuntematon place_id Otteluissa: ${m.placeId} (${m.matchId || m.match})`);
   });
   IDX.talkoot.forEach(r => { const mid = pick(r,["match_id","ottelu_id"]); if (mid && !IDX.matchesById.has(idKey(mid))) addWarn(`Talkoot-rivin match_id ei löydy Ottelut-välilehdeltä: ${mid}`); });
 }
@@ -317,7 +340,10 @@ function renderTabs() {
 function eventHtml(it, status="") { return `<div class="event ${status}"><div class="ev-icon ${it.color}">${esc(it.icon || "ℹ️")}</div><div class="ev-body">${it.time ? `<div class="ev-time">${esc(it.time)}${it.endTime ? `–${esc(it.endTime)}` : ""}</div>` : ""}<div class="ev-title ${it.accent ? "accent" : ""}">${esc(it.title)}<span class="badge-now">Nyt</span></div>${it.sub ? `<div class="ev-sub">${it.sub}</div>` : ""}</div></div>`; }
 function loadErrorsHtml() {
   let html = "";
-  if (loadErrors.length) html += `<div class="error-box"><strong>Huom:</strong> kaikkia Google Sheets -välilehtiä ei saatu ladattua.<br>${esc(loadErrors.join(" | "))}</div>`;
+  if (loadErrors.length) {
+    const hint = sourceStatus.asetukset === "ok" ? " Tarkista Asetukset-välilehden CSV-linkit tai julkaise välilehdet uudelleen CSV-muodossa." : " Tarkista Asetukset-välilehden julkaistu CSV-linkki koodista.";
+    html += `<div class="error-box"><strong>Huom:</strong> kaikkia Google Sheets -välilehtiä ei saatu ladattua.<br>${esc(loadErrors.join(" | "))}<br>${esc(hint)}</div>`;
+  }
   if (dataWarnings.length) {
     const shown = dataWarnings.slice(0,8).map(esc).join("<br>");
     const more = dataWarnings.length > 8 ? `<br>… ja ${dataWarnings.length - 8} muuta tarkistushuomiota.` : "";
