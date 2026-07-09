@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: normalized-sheets-contact-links-2026-07-07-fixed -->
+<!-- version: tab-scroll-place-notes-contact-order-2026-07-09 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -18,10 +18,8 @@
   @media(max-width:430px){header .head-text{padding-right:0;text-align:left}header h1{font-size:18px}}
   .day-tabs,.info-tabs{display:flex;overflow-x:auto;scrollbar-width:none}.day-tabs::-webkit-scrollbar,.info-tabs::-webkit-scrollbar{display:none}.day-tabs{background:var(--darkred)}.info-tabs{background:#7E1111;-webkit-overflow-scrolling:touch}
   .day-tab,.info-tab{cursor:pointer;border:none;background:transparent;border-bottom:3px solid transparent;color:rgba(255,255,255,.7);font-weight:600;text-align:center}.day-tab{flex:1 0 54px;padding:10px 2px;font-size:12px;line-height:1.25}.info-tab{flex:1 0 auto;white-space:nowrap;padding:10px 12px;font-size:13px}.day-tab.active,.info-tab.active{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,.08)}.tab-weekday{display:block;font-size:13px}.tab-date{display:block;font-size:11px;opacity:.85}.today-dot{display:inline-block;width:6px;height:6px;background:#FFD24A;border-radius:50%;margin-left:4px;vertical-align:middle}
-  @media(max-width:430px){.info-tab{font-size:12px;padding:10px 10px}}
   main{max-width:600px;margin:0 auto;padding:14px 12px}.next-banner{background:var(--now-bg);border:2px solid var(--now-border);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:none}.next-banner.visible{display:block}.nb-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#A87800;margin-bottom:3px}.nb-title{font-size:16px;font-weight:700}.nb-sub{font-size:13px;color:var(--sub);margin-top:2px;line-height:1.45}.nb-countdown{font-size:13px;font-weight:600;color:#A87800;margin-top:4px}
-  .stale-note{font-size:11px;color:var(--sub);text-align:right;margin:-4px 4px 10px}
-  .event,.addr-card{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;transition:opacity .3s}.event.past{opacity:.48}.event.current{border:2px solid var(--now-border);background:var(--now-bg);box-shadow:0 2px 10px rgba(232,168,0,.2)}.event.open{border-color:var(--now-border);background:var(--now-bg)}
+  .event,.addr-card{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px}.event.past{opacity:.48}.event.current{border:2px solid var(--now-border);background:var(--now-bg);box-shadow:0 2px 10px rgba(232,168,0,.2)}.event.open{border-color:var(--now-border);background:var(--now-bg)}
   .badge-now{display:none;background:var(--now-border);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle;text-transform:uppercase}.event.current .badge-now{display:inline-block}
   .ev-icon{width:40px;height:40px;min-width:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff}.ic-red{background:var(--red)}.ic-green{background:var(--green)}.ic-navy{background:var(--navy)}.ic-darkred{background:var(--darkred)}.ic-blue{background:var(--blue)}.ic-transfer{background:#6B7280}
   .ev-body{flex:1;min-width:0}.ev-time{font-size:12px;font-weight:700;color:var(--red);margin-bottom:1px}.ev-title{font-size:15px;font-weight:700;line-height:1.35}.ev-title.accent{color:var(--red)}.ev-sub{font-size:12.5px;color:var(--sub);margin-top:3px;line-height:1.45;overflow-wrap:anywhere}.addr-card h3{font-size:15px;color:var(--red);margin-bottom:3px}.addr-card p{font-size:13px;color:var(--sub);line-height:1.55}a.maplink{color:var(--red);font-weight:600;text-decoration:underline;text-underline-offset:2px}.resultlink{display:inline-block;margin-top:2px;color:var(--red);font-weight:700;text-decoration:underline;text-underline-offset:2px}
@@ -32,36 +30,36 @@
 </head>
 <body>
 <div class="topbar"><header><img class="logo" src="logo.png" alt="Joukkueen logo" onerror="this.style.visibility='hidden'"><div class="head-text"><h1 id="siteTitle">Tenavaleiri 2026</h1><div class="team" id="teamLine">Ladataan tietoja...</div><div class="clock" id="clock"></div></div></header><div class="day-tabs" id="dayTabs"></div><div class="info-tabs" id="infoTabs"></div></div>
-<main>
-  <div class="next-banner" id="nextBanner"><div class="nb-label">Seuraavaksi</div><div class="nb-title" id="nbTitle"></div><div class="nb-sub" id="nbSub"></div><div class="nb-countdown" id="nbCountdown"></div></div>
-  <div id="dataStaleNote" class="stale-note" style="display:none;"></div>
-  <div id="eventList"><p class="small-note" style="text-align:center;margin-top:20px;">Ladataan Google Sheets -tietoja...</p></div>
-  <footer id="footerText">Tenavaleiri 2026</footer>
-</main>
+<main><div class="next-banner" id="nextBanner"><div class="nb-label">Seuraavaksi</div><div class="nb-title" id="nbTitle"></div><div class="nb-sub" id="nbSub"></div><div class="nb-countdown" id="nbCountdown"></div></div><div id="eventList"><p class="small-note" style="text-align:center;margin-top:20px;">Ladataan Google Sheets -tietoja...</p></div><footer id="footerText">Tenavaleiri 2026</footer></main>
 <script>
-// ─── TIETOLÄHTEET ────────────────────────────────────────────────────────────
 const DATA_SOURCES = {
-  // Ainoa kovakoodattu URL. Muiden arkkojen osoitteet luetaan Asetuksista avaimilla
-  // ohjelma_csv_url, ruokailut_csv_url, jne. Arkki jää tyhjäksi jos URL puuttuu.
-  asetukset: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=66064090&single=true&output=csv"
+  // Asetukset on ainoa koodiin kiinnitetty CSV-lähde.
+  // Muut välilehdet luetaan Asetukset-välilehden *_csv_url-avaimista.
+  asetukset: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTSkSWXcPwy_8QzG9pZ0O-JjAQhsVY78Y3riBq5ZaolahL5Xg1fs1KhOqE0irbdMvqd_4NACON1i0ZQ/pub?gid=66064090&single=true&output=csv",
+  ohjelma: "",
+  ruokailut: "",
+  siirtymat: "",
+  ottelut: "",
+  talkoot: "",
+  osoitteet: "",
+  yhteystiedot: ""
 };
-
-const DATA_REFRESH_MS = 2 * 60 * 1000; // Sheets-data päivittyy 2 min välein
-
 const INFO_TAB_IDS = { osoitteet:"osoitteet", yhteystiedot:"yhteystiedot", saa:"saa" };
 const WD = ["Su","Ma","Ti","Ke","To","Pe","La"];
 const WD_LONG = ["SUNNUNTAI","MAANANTAI","TIISTAI","KESKIVIIKKO","TORSTAI","PERJANTAI","LAUANTAI"];
 const WMO = {0:["☀️","Selkeää"],1:["🌤️","Enimmäkseen selkeää"],2:["⛅","Puolipilvistä"],3:["☁️","Pilvistä"],45:["🌫️","Sumua"],48:["🌫️","Sumua"],51:["🌦️","Tihkusadetta"],53:["🌦️","Tihkusadetta"],55:["🌦️","Tihkusadetta"],61:["🌧️","Heikkoa sadetta"],63:["🌧️","Sadetta"],65:["🌧️","Voimakasta sadetta"],71:["❄️","Lumisadetta"],73:["❄️","Lumisadetta"],75:["❄️","Lumisadetta"],80:["🌦️","Sadekuuroja"],81:["🌦️","Sadekuuroja"],82:["🌧️","Voimakkaita kuuroja"],95:["⛈️","Ukkosta"]};
 
-// ─── TILA ────────────────────────────────────────────────────────────────────
-let DATA = {}, SETTINGS = {}, PLACES = {}, IDX = {}, DAYS = [];
-let selectedTab = null, weatherData = null, weatherError = "";
-let loadErrors = [], dataWarnings = [], sourceStatus = {};
+let DATA = {}, SETTINGS = {}, PLACES = {}, IDX = {}, DAYS = [], selectedTab = null, weatherData = null, weatherError = "", loadErrors = [], dataWarnings = [], sourceStatus = {};
 let lastDataLoadAt = null, lastDataLoadFailed = false;
-
-// ─── APUFUNKTIOT ─────────────────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+const cleanId = v => String(v || "").trim();
+const safeExternalUrl = url => {
+  let u = String(url || "").trim();
+  if (!u) return "";
+  if (/^www\./i.test(u)) u = "https://" + u;
+  return /^https?:\/\//i.test(u) ? u : "";
+};
 const isTrue = v => String(v ?? "").trim().toLowerCase() !== "false" && String(v ?? "").trim() !== "0";
 const pick = (obj, keys, fallback="") => { for (const k of keys) if (obj && obj[k] !== undefined && obj[k] !== "") return obj[k]; return fallback; };
 const normKey = s => String(s || "").trim().toLowerCase().replace(/ä/g,"a").replace(/ö/g,"o").replace(/å/g,"a").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"");
@@ -70,7 +68,6 @@ const roleKey = s => normKey(s).replace(/_/g,"");
 const visibleRows = rows => (rows || []).filter(r => isTrue(r.visible));
 const parseNumberFi = (v, fallback) => { const n = Number(String(v ?? "").trim().replace(",", ".")); return Number.isFinite(n) ? n : fallback; };
 
-// ─── CSV-LATAUS ───────────────────────────────────────────────────────────────
 function parseCsv(text) {
   text = text.replace(/^\uFEFF/, "");
   const rows = []; let row = [], cell = "", inQuotes = false;
@@ -87,7 +84,6 @@ function parseCsv(text) {
   const headers = rows.shift().map(normKey);
   return rows.filter(r => r.some(v => String(v || "").trim())).map(r => Object.fromEntries(headers.map((h,i) => [h, String(r[i] || "").trim()])));
 }
-
 async function loadCsv(name, url) {
   url = String(url || "").trim();
   if (!url) return [];
@@ -96,60 +92,66 @@ async function loadCsv(name, url) {
   if (!res.ok) throw new Error(name + ": HTTP " + res.status);
   return parseCsv(await res.text());
 }
-
-// Etsii URL:n arkille Asetuksista usealla avainmuodolla:
-// ohjelma_csv_url, csv_ohjelma, data_source_ohjelma, ohjelma_url, csv_url_ohjelma
-function settingUrl(settings, name) {
+function settingUrl(settings, name, fallback="") {
   const n = normKey(name);
-  for (const k of [`${n}_csv_url`, `csv_${n}`, `data_source_${n}`, `${n}_url`, `csv_url_${n}`])
-    if (settings[k]) return settings[k];
-  return "";
+  const keys = [
+    `${n}_csv_url`, `csv_${n}`, `data_source_${n}`, `${n}_url`,
+    `csv_url_${n}`, `google_sheet_${n}`, `googlesheet_${n}`
+  ];
+  for (const k of keys) if (settings[k]) return settings[k];
+  return fallback || "";
 }
-
 async function loadAllData() {
+  const previous = DATA || {};
   const errors = [];
   sourceStatus = {};
 
-  // Lataa Asetukset ensin — ne sisältävät kaikkien muiden arkkojen URL:t
   let asetuksetRows = [];
   if (DATA_SOURCES.asetukset) {
-    try { asetuksetRows = await loadCsv("asetukset", DATA_SOURCES.asetukset); sourceStatus.asetukset = "ok"; }
-    catch (err) { errors.push(err.message); sourceStatus.asetukset = "error"; }
+    try {
+      asetuksetRows = await loadCsv("asetukset", DATA_SOURCES.asetukset);
+      sourceStatus.asetukset = "ok";
+    } catch (err) {
+      errors.push(err.message);
+      sourceStatus.asetukset = "error";
+      asetuksetRows = Array.isArray(previous.asetukset) ? previous.asetukset : [];
+    }
   }
+
   const tmpSettings = Object.fromEntries(
     asetuksetRows.map(r => [normKey(pick(r,["key","avain"])), pick(r,["value","arvo"])]).filter(([k]) => k)
   );
 
-  // Muiden arkkojen URL:t luetaan yksinomaan Asetuksista
-  const sheetNames = ["ohjelma","ruokailut","siirtymat","ottelut","talkoot","osoitteet","yhteystiedot"];
-  const entries = await Promise.all(sheetNames.map(async name => {
-    const url = settingUrl(tmpSettings, name);
+  const sourceNames = ["ohjelma","ruokailut","siirtymat","ottelut","talkoot","osoitteet","yhteystiedot"];
+  const entries = await Promise.all(sourceNames.map(async name => {
+    const url = settingUrl(tmpSettings, name, "");
+    if (!url) { sourceStatus[name] = "missing"; return [name, []]; }
     try {
-      if (!url) { sourceStatus[name] = "missing"; return [name, []]; }
       const rows = await loadCsv(name, url);
       sourceStatus[name] = "ok";
       return [name, rows];
     } catch (err) {
       errors.push(err.message);
       sourceStatus[name] = "error";
-      return [name, []];
+      // Päivitysvirhe ei tyhjennä aiemmin toimivaa dataa. Näin hetkellinen
+      // CSV- tai verkkovirhe ei pudota koko päivänäkymää tyhjäksi.
+      return [name, Array.isArray(previous[name]) ? previous[name] : []];
     }
   }));
 
-  return { data: { asetukset: asetuksetRows, ...Object.fromEntries(entries) }, errors };
+  DATA = { asetukset: asetuksetRows, ...Object.fromEntries(entries) };
+  loadErrors = errors;
+  lastDataLoadFailed = errors.length > 0;
+  lastDataLoadAt = new Date();
 }
 
-// ─── PÄIVÄMÄÄRÄ- JA AIKAMUUNNOKSET ───────────────────────────────────────────
 function normDate(v) {
   v = String(v || "").trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
   const m = v.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
   return m ? `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}` : "";
 }
-function normalizeTime(v) {
-  const m = String(v || "").trim().replace(".", ":").match(/(\d{1,2}):(\d{2})/);
-  return m ? `${m[1].padStart(2,"0")}:${m[2]}` : "";
-}
+function normalizeTime(v) { const m = String(v || "").trim().replace(".", ":").match(/(\d{1,2}):(\d{2})/); return m ? `${m[1].padStart(2,"0")}:${m[2]}` : ""; }
 function parseDateTime(v) {
   v = String(v || "").trim();
   let m = v.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})\s+(\d{1,2}):(\d{2})/);
@@ -164,94 +166,65 @@ function nowFi() { return new Date(new Date().toLocaleString("en-US", { timeZone
 function todayKey() { const n = nowFi(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,"0")}-${String(n.getDate()).padStart(2,"0")}`; }
 function minutesNow() { const n = nowFi(); return n.getHours()*60 + n.getMinutes(); }
 
-// ─── DATAN RAKENTAMINEN ───────────────────────────────────────────────────────
 function buildState() {
   dataWarnings = [];
-  SETTINGS = Object.fromEntries(
-    (DATA.asetukset || []).map(r => [pick(r,["key","avain"]), pick(r,["value","arvo"])]).filter(([k]) => k)
-  );
-  PLACES = Object.fromEntries(
-    visibleRows(DATA.osoitteet).map(r => [pick(r,["place_id","paikka_id","id"]), r]).filter(([id]) => id)
-  );
+  SETTINGS = Object.fromEntries((DATA.asetukset || []).map(r => [normKey(pick(r,["key","avain"])), pick(r,["value","arvo"])]).filter(([k]) => k));
+  PLACES = {};
+  visibleRows(DATA.osoitteet).forEach(r => {
+    const id = cleanId(pick(r,["place_id","paikka_id","id"]));
+    if (!id) return;
+    PLACES[id] = r;
+    PLACES[idKey(id)] = r;
+  });
   IDX = {
-    ohjelma: visibleRows(DATA.ohjelma),
-    ruokailut: visibleRows(DATA.ruokailut).map(mealInfo),
-    siirtymat: visibleRows(DATA.siirtymat).map(routeInfo),
-    ottelut: visibleRows(DATA.ottelut).map(matchInfo),
-    talkoot: visibleRows(DATA.talkoot),
-    contacts: visibleRows(DATA.yhteystiedot),
-    dates: new Set(),
-    matchesById: new Map(),
-    mealsById: new Map(),
-    routesByKey: new Map(),
-    talkootByMatchId: new Map()
+    ohjelma:visibleRows(DATA.ohjelma),
+    ruokailut:visibleRows(DATA.ruokailut).map(mealInfo),
+    siirtymat:visibleRows(DATA.siirtymat).map(routeInfo),
+    ottelut:visibleRows(DATA.ottelut).map(matchInfo),
+    talkoot:visibleRows(DATA.talkoot),
+    contacts:visibleRows(DATA.yhteystiedot),
+    dates:new Set(), matchesById:new Map(), mealsById:new Map(), routesByKey:new Map(), talkootByMatchId:new Map()
   };
   IDX.ruokailut.forEach(m => { if (m.mealId) IDX.mealsById.set(idKey(m.mealId), m); });
   IDX.siirtymat.forEach(r => { const key = routeKey(r.start, r.end); if (key) IDX.routesByKey.set(key, r); });
   IDX.ottelut.forEach(m => { if (m.date) IDX.dates.add(m.date); if (m.matchId) IDX.matchesById.set(idKey(m.matchId), m); });
   IDX.ohjelma.forEach(r => { const d = programRowDate(r); if (d) IDX.dates.add(d); });
-  IDX.talkoot.forEach(r => {
-    const mid = idKey(pick(r,["match_id","ottelu_id"]));
-    if (!mid) return;
-    if (!IDX.talkootByMatchId.has(mid)) IDX.talkootByMatchId.set(mid, []);
-    IDX.talkootByMatchId.get(mid).push(r);
-  });
+  IDX.talkoot.forEach(r => { const mid = idKey(pick(r,["match_id","ottelu_id"])); if (!mid) return; if (!IDX.talkootByMatchId.has(mid)) IDX.talkootByMatchId.set(mid, []); IDX.talkootByMatchId.get(mid).push(r); });
   validateData();
   if (!IDX.dates.size) ["2026-07-13","2026-07-14","2026-07-15","2026-07-16","2026-07-17","2026-07-18"].forEach(d => IDX.dates.add(d));
-  DAYS = Array.from(IDX.dates).sort().map(date => {
-    const d = new Date(date + "T12:00:00");
-    return { key:date, label:WD[d.getDay()], dateLabel:`${d.getDate()}.${d.getMonth()+1}.` };
-  });
-  document.title = SETTINGS.site_title || "Tenavaleiri 2026";
-  $("siteTitle").textContent = SETTINGS.site_title || "Tenavaleiri 2026";
-  const team = [SETTINGS.team_name, SETTINGS.series].filter(Boolean).join(" · ");
-  $("teamLine").textContent = team || "Manse PP";
-  $("footerText").textContent = SETTINGS.footer || team || "Tenavaleiri 2026";
+  DAYS = Array.from(IDX.dates).sort().map(date => { const d = new Date(date + "T12:00:00"); return { key:date, label:WD[d.getDay()], dateLabel:`${d.getDate()}.${d.getMonth()+1}.` }; });
+  document.title = SETTINGS.site_title || "Tenavaleiri 2026"; $("siteTitle").textContent = SETTINGS.site_title || "Tenavaleiri 2026";
+  const team = [SETTINGS.team_name, SETTINGS.series].filter(Boolean).join(" · "); $("teamLine").textContent = team || "Manse PP"; $("footerText").textContent = SETTINGS.footer || team || "Tenavaleiri 2026";
 }
 
-// ─── OTTELUDATA ───────────────────────────────────────────────────────────────
 function idKey(v) { return String(v || "").trim().toLowerCase(); }
-function isOwnTeamName(name) {
-  const n = String(name || "").toLowerCase();
-  const team = String(SETTINGS.team_match_name || SETTINGS.team_name || "Manse PP").toLowerCase();
-  return [team, "manse pp", "manse pp, tampere"].filter(Boolean).some(c => n.includes(c));
-}
-function splitMatchText(txt) {
-  const p = String(txt || "").trim().split(/\s+[–—-]\s+/);
-  return p.length >= 2 ? [p[0].trim(), p.slice(1).join(" - ").trim()] : ["", ""];
-}
-function syntheticMatchId(date, time, matchText) {
-  return [date, String(time||"").replace(/:/g,""), roleKey(matchText).slice(0,48)].filter(Boolean).join("-") || "ottelu";
-}
+function isOwnTeamName(name) { const n = String(name || "").toLowerCase(); const team = String(SETTINGS.team_match_name || SETTINGS.team_name || "Manse PP").toLowerCase(); return [team,"manse pp","manse pp, tampere"].filter(Boolean).some(c => n.includes(c)); }
+function splitMatchText(txt) { const p = String(txt || "").trim().split(/\s+[–—-]\s+/); return p.length >= 2 ? [p[0].trim(), p.slice(1).join(" - ").trim()] : ["", ""]; }
+function syntheticMatchId(date, time, matchText) { return [date, String(time||"").replace(/:/g,""), roleKey(matchText).slice(0,48)].filter(Boolean).join("-") || "ottelu"; }
 function matchInfo(r) {
   const parsed = parseDateTime(pick(r,["paivamaara","datetime","date"]));
   const date = parsed.date || normDate(pick(r,["date","paivamaara"]));
   const time = parsed.time || normalizeTime(pick(r,["time","aika"]));
   const endTime = normalizeTime(pick(r,["end_time","loppuaika"])) || endDefault(time, 75);
-  const rawMatch = pick(r,["match","ottelu"]);
-  const [mh, ma] = splitMatchText(rawMatch);
-  const home = pick(r,["kotijoukkue","home_team"]) || mh;
-  const away = pick(r,["vierasjoukkue","away_team"]) || ma;
+  const rawMatch = pick(r,["match","ottelu"]); const [mh, ma] = splitMatchText(rawMatch);
+  const home = pick(r,["kotijoukkue","home_team"]) || mh; const away = pick(r,["vierasjoukkue","away_team"]) || ma;
   const match = [home, away].filter(Boolean).join(" – ") || rawMatch || "Ottelu";
-  const explicitId = pick(r,["match_id","ottelu_id","id"]);
-  const matchId = explicitId || syntheticMatchId(date, time, match);
-  return { ...r, matchId, date, time, endTime, home, away, match,
-    result: pick(r,["tulos","result"]), placeId: pick(r,["place_id","paikka_id"]),
-    stadium: pick(r,["stadion","stadium"]), address: pick(r,["osoite","address"]),
-    notes: pick(r,["lisatiedot","notes"]) };
+  const explicitId = pick(r,["match_id","ottelu_id","id"]); const matchId = explicitId || syntheticMatchId(date, time, match);
+  return { ...r, matchId, date, time, endTime, home, away, match, result:pick(r,["tulos","result"]), placeId:pick(r,["place_id","paikka_id"]), stadium:pick(r,["stadion","stadium"]), address:pick(r,["osoite","address"]), notes:pick(r,["lisatiedot","notes"]) };
 }
 function mealInfo(r) {
-  return { ...r,
-    mealId: pick(r,["meal_id","ateria_id","id"]),
-    date: normDate(pick(r,["date","paivamaara"])),
-    weekday: pick(r,["weekday","viikonpaiva"]),
-    meal: pick(r,["meal","ateria","title","otsikko"]),
-    windowStart: normalizeTime(pick(r,["window_start","start_time","alkuaika"])),
-    windowEnd: normalizeTime(pick(r,["window_end","end_time","loppuaika"])),
-    placeId: pick(r,["place_id","paikka_id"]),
-    menu: pick(r,["menu","ruokalista"]),
-    notes: pick(r,["notes","lisatiedot"]),
-    icon: pick(r,["icon","ikoni"])
+  const mealId = pick(r,["meal_id","ateria_id","id"]);
+  return {
+    ...r, mealId,
+    date:normDate(pick(r,["date","paivamaara"])),
+    weekday:pick(r,["weekday","viikonpaiva"]),
+    meal:pick(r,["meal","ateria","title","otsikko"]),
+    windowStart:normalizeTime(pick(r,["window_start","start_time","alkuaika"])),
+    windowEnd:normalizeTime(pick(r,["window_end","end_time","loppuaika"])),
+    placeId:pick(r,["place_id","paikka_id"]),
+    menu:pick(r,["menu","ruokalista"]),
+    notes:pick(r,["notes","lisatiedot"]),
+    icon:pick(r,["icon","ikoni"])
   };
 }
 function routeKey(start, end) { start = idKey(start); end = idKey(end); return start && end ? `${start}|${end}` : ""; }
@@ -260,53 +233,49 @@ function routeInfo(r) {
   const end = pick(r,["end_destination","maarapaikka","to","minne"]);
   const raw = pick(r,["duration_minutes","minutes","ajoaika_min","duration","kesto"]);
   const minutes = Number(String(raw).replace(",",".").match(/\d+/)?.[0] || "");
-  return { ...r, start, end, durationMinutes: Number.isFinite(minutes) ? minutes : null, notes: pick(r,["notes","lisatiedot"]) };
+  return { ...r, start, end, durationMinutes:Number.isFinite(minutes) ? minutes : null, notes:pick(r,["notes","lisatiedot"]) };
 }
-const mealById = id => IDX.mealsById?.get(idKey(id)) || null;
-const routeByPlaces = (start, end) => IDX.routesByKey?.get(routeKey(start,end)) || null;
+function mealById(id) { return IDX.mealsById?.get(idKey(id)) || null; }
+function routeByPlaces(start, end) { return IDX.routesByKey?.get(routeKey(start,end)) || null; }
 function addWarn(msg) { if (msg && !dataWarnings.includes(msg)) dataWarnings.push(msg); }
 function validateData() {
-  // Validoidaan vain jos ao. arkki on ladattu onnistuneesti.
-  // "missing" (URL puuttuu Asetuksista) ei ole virhe — ei varoituksia.
-  const placesOk = sourceStatus.osoitteet === "ok" && Object.keys(PLACES).length > 0;
-  const mealsOk  = sourceStatus.ruokailut === "ok";
-  const routesOk = sourceStatus.siirtymat === "ok";
-  if (IDX.ohjelma.length) {
-    IDX.ohjelma.forEach(r => {
-      const row = pick(r,["program_id","id","title","otsikko"],"Ohjelma-rivi");
-      const type = String(pick(r,["type","tyyppi"])).toLowerCase();
-      const ref = pick(r,["ref_id","viite_id"]);
-      const placeId = pick(r,["place_id","paikka_id"]);
-      const start = pick(r,["start_destination","lahtopaikka"]);
-      const end = pick(r,["end_destination","maarapaikka"]) || placeId;
-      if (placesOk && placeId && placeId !== "TÄYDENNÄ" && !PLACES[placeId]) addWarn(`Tuntematon place_id Ohjelmassa: ${placeId} (${row})`);
-      if (mealsOk && type.includes("ruokail") && ref && !mealById(ref)) addWarn(`Ruokailun ref_id ei löydy Ruokailut-välilehdeltä: ${ref}`);
-      if (routesOk && type.includes("siirty") && start && end && start !== "TÄYDENNÄ" && end !== "TÄYDENNÄ" && !routeByPlaces(start,end)) addWarn(`Siirtymän ajoaika puuttuu: ${start} → ${end}`);
-    });
-  }
-  if (IDX.ottelut.length) {
-    IDX.ottelut.forEach(m => {
-      if (placesOk && m.placeId && m.placeId !== "?" && m.placeId !== "TÄYDENNÄ" && !PLACES[m.placeId]) addWarn(`Tuntematon place_id Otteluissa: ${m.placeId} (${m.matchId || m.match})`);
-    });
-  }
-  if (IDX.talkoot.length) {
-    IDX.talkoot.forEach(r => {
-      const mid = pick(r,["match_id","ottelu_id"]);
-      if (mid && !IDX.matchesById.has(idKey(mid))) addWarn(`Talkoot-rivin match_id ei löydy Ottelut-välilehdeltä: ${mid}`);
-    });
-  }
+  const placesAvailable = sourceStatus.osoitteet === "ok" && Object.keys(PLACES).length > 0;
+  const mealsAvailable = sourceStatus.ruokailut === "ok";
+  const routesAvailable = sourceStatus.siirtymat === "ok";
+  IDX.ohjelma.forEach(r => {
+    const row = pick(r,["program_id","id","title","otsikko"],"Ohjelma-rivi");
+    const type = String(pick(r,["type","tyyppi"])).toLowerCase();
+    const ref = pick(r,["ref_id","viite_id"]);
+    const placeId = pick(r,["place_id","paikka_id"]);
+    const start = pick(r,["start_destination","lahtopaikka"]);
+    const end = pick(r,["end_destination","maarapaikka"]) || placeId;
+    if (placesAvailable && placeId && placeId !== "TÄYDENNÄ" && !PLACES[placeId]) addWarn(`Tuntematon place_id Ohjelmassa: ${placeId} (${row})`);
+    if (mealsAvailable && type.includes("ruokail") && ref && !mealById(ref)) addWarn(`Ruokailun ref_id ei löydy Ruokailut-välilehdeltä: ${ref}`);
+    if (routesAvailable && type.includes("siirty") && start && end && start !== "TÄYDENNÄ" && end !== "TÄYDENNÄ" && !routeByPlaces(start,end)) addWarn(`Siirtymän ajoaika puuttuu: ${start} → ${end}`);
+  });
+  IDX.ottelut.forEach(m => {
+    if (placesAvailable && m.placeId && m.placeId !== "?" && m.placeId !== "TÄYDENNÄ" && !PLACES[m.placeId]) addWarn(`Tuntematon place_id Otteluissa: ${m.placeId} (${m.matchId || m.match})`);
+  });
+  if (sourceStatus.ottelut === "ok") IDX.talkoot.forEach(r => { const mid = pick(r,["match_id","ottelu_id"]); if (mid && !IDX.matchesById.has(idKey(mid))) addWarn(`Talkoot-rivin match_id ei löydy Ottelut-välilehdeltä: ${mid}`); });
 }
-
-// ─── TALKOOT ─────────────────────────────────────────────────────────────────
 function expectedRoles(m) {
   if (!m) return [];
-  if (isOwnTeamName(m.home)) return ["Kirjuri","Takarajatuomari"];
+  if (isOwnTeamName(m.home)) {
+    // 2-tuomari tulee pääsääntöisesti tuomarileiriltä.
+    // Järkkävuorossa oleva joukkue varautuu tarvittaessa hoitamaan myös tämän,
+    // mutta sitä ei näytetä automaattisesti avoimena kotipelin toimitsijavuorona.
+    // return ["Kirjuri","2-tuomari","Takarajatuomari"];
+    return ["Kirjuri","Takarajatuomari"];
+  }
   if (isOwnTeamName(m.away)) return ["Tulostaulu","3-tuomari"];
   return [];
 }
 function taskBelongsToMatch(row, m) {
   const mid = idKey(m.matchId), rowMid = idKey(pick(row,["match_id","ottelu_id"])), tid = idKey(pick(row,["task_id","talkoo_id","id"]));
   if (mid && (rowMid === mid || tid.startsWith(mid + "-") || (rowMid && mid.startsWith(rowMid)))) return true;
+
+  // Fallback: Talkoot-välilehdellä voi olla oma lyhyempi match_id
+  // ja lisäksi date + time + match. Tällöin yhdistetään otteluun niiden perusteella.
   const rowDate = normDate(pick(row,["date","paivamaara"]));
   const rowTime = normalizeTime(pick(row,["time","aika"]));
   const rowText = pick(row,["match","ottelu"]);
@@ -326,50 +295,21 @@ function talkootForMatch(m) {
   expectedRoles(m).forEach(role => { if (!existingRoles.has(roleKey(role))) unique.push({ match_id:m.matchId, role, person:"", visible:"TRUE", _generated:"TRUE" }); });
   return unique;
 }
-function talkooLinesHtml(rows) {
-  // Avoin vuoro näytetään punaisella "❗ Avoin"-merkinnällä, ei "N.N."-tekstillä
-  return rows.map(r => {
-    const role = pick(r,["role","rooli"],"Rooli");
-    const person = pick(r,["person","henkilo"]);
-    const notes = pick(r,["notes","lisatiedot"]);
-    const personHtml = person
-      ? esc(person)
-      : '<span style="color:var(--red);font-weight:700;">❗ Avoin — ilmoittaudu!</span>';
-    return `<div style="margin-top:3px;">• <strong>${esc(role)}:</strong> ${personHtml}${notes ? `<br><span style="color:var(--sub);margin-left:10px;">${esc(notes)}</span>` : ""}</div>`;
-  }).join("");
-}
+function talkooLinesHtml(rows, open="N.N.") { return rows.map(r => { const role = pick(r,["role","rooli"],"Rooli"); const person = pick(r,["person","henkilo"], open); const notes = pick(r,["notes","lisatiedot"]); return `<div style="margin-top:3px;">• <strong>${esc(role)}:</strong> ${esc(person)}${notes ? `<br><span style="color:var(--sub);margin-left:10px;">${esc(notes)}</span>` : ""}</div>`; }).join(""); }
 
-// ─── PAIKAT JA KARTTALINKIT ───────────────────────────────────────────────────
-function mapLink(label, query) {
-  if (!query) return "📍 " + esc(label || "Paikka tarkentuu");
-  return `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}" target="_blank" rel="noopener">📍 ${esc(label)}</a>`;
-}
-function placeObj(placeId) { return PLACES[placeId] || null; }
+function mapLink(label, query) { if (!query) return esc(label || "Paikka tarkentuu"); return `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}" target="_blank" rel="noopener">📍 ${esc(label)}</a>`; }
+function placeObj(placeId) { const id = cleanId(placeId); return PLACES[id] || PLACES[idKey(id)] || null; }
 function placePlain(placeId, fallback="") { const p = placeObj(placeId); return p ? pick(p,["name","nimi"], placeId) : fallback; }
 function placeAddress(placeId) { const p = placeObj(placeId); return p ? pick(p,["address","osoite"]) : ""; }
 function placeNotes(placeId) { const p = placeObj(placeId); return p ? pick(p,["notes","lisatiedot"]) : ""; }
-function placeText(placeId, fallback="") {
-  const p = placeObj(placeId);
-  if (!p) return fallback ? "📍 " + esc(fallback) : "";
-  const name = pick(p,["name","nimi"], placeId);
-  const addr = pick(p,["address","osoite"]);
-  const q = pick(p,["maps_query","karttahaku"], [name,addr].filter(Boolean).join(", "));
-  return mapLink(addr ? `${name} (${addr})` : name, q);
-}
-function placeHtmlForMatch(m) {
-  if (m.placeId) return placeText(m.placeId);
-  if (m.stadium || m.address) return mapLink(m.stadium || m.address, [m.stadium,m.address].filter(Boolean).join(", "));
-  return "";
-}
-// Tulospalvelulinkki: ensin ottelun oma linkki, sitten globaali fallback.
-// Globaali fallback näytetään vain jos se on asetettu — se kohdistuu yleensä turnausnäkymään,
-// ei yksittäiseen otteluun, joten se lisätään harkiten eikä aina.
+function placeText(placeId, fallback="") { const p = placeObj(placeId); if (!p) return fallback ? esc(fallback) : ""; const name = pick(p,["name","nimi"], placeId); const addr = pick(p,["address","osoite"]); const q = pick(p,["maps_query","karttahaku"], [name,addr].filter(Boolean).join(", ")); return mapLink(addr ? `${name} (${addr})` : name, q); }
+function placeHtmlForMatch(m) { if (m.placeId) return placeText(m.placeId); if (m.stadium || m.address) return mapLink(m.stadium || m.address, [m.stadium,m.address].filter(Boolean).join(", ")); return ""; }
 function resultsUrlForMatch(m) {
-  return pick(m,["linkki","url","results_url","pesistulokset_url","tulospalvelu_url","ottelu_url","match_url","link"])
-    || SETTINGS.pesistulokset_url || SETTINGS.results_url || SETTINGS.tulospalvelu_url || "";
+  const direct = pick(m,["linkki","url","results_url","pesistulokset_url","tulospalvelu_url","ottelu_url","match_url","link"]);
+  return direct || SETTINGS.pesistulokset_url || SETTINGS.results_url || SETTINGS.tulospalvelu_url || "";
 }
 function resultsLinkHtml(m) {
-  const url = resultsUrlForMatch(m);
+  const url = safeExternalUrl(resultsUrlForMatch(m));
   return url ? `<a class="resultlink" href="${esc(url)}" target="_blank" rel="noopener">🔗 Pesistulokset</a>` : "";
 }
 function routeText(row) {
@@ -379,40 +319,28 @@ function routeText(row) {
   const left = placePlain(start, start || "Lähtöpaikka");
   const right = placePlain(end, end || "Määränpää");
   const addr = placeAddress(end);
-  const route = routeByPlaces(start, end);
+  const route = routeByPlaces(start,end);
   const duration = route?.durationMinutes ? `<br>Ajoaika n. ${esc(route.durationMinutes)} min` : "";
   return `${esc(left)} → ${placeText(end, right)}${addr ? `<br>${esc(addr)}` : ""}${duration}`;
 }
-function colorClass(c) { c = String(c || "").toLowerCase(); if (c.includes("green")) return "ic-green"; if (c.includes("navy")) return "ic-navy"; if (c.includes("blue")) return "ic-blue"; if (c.includes("dark")) return "ic-darkred"; return "ic-red"; }
+function colorClass(c, fallback="red") { c = String(c || fallback).toLowerCase(); if (c.includes("green")) return "ic-green"; if (c.includes("navy")) return "ic-navy"; if (c.includes("blue")) return "ic-blue"; if (c.includes("dark")) return "ic-darkred"; return "ic-red"; }
 function defaultIcon(type) { const t = String(type || "").toLowerCase(); if (t.includes("ruoka") || t.includes("aami") || t.includes("lounas") || t.includes("paiv") || t.includes("päiv") || t.includes("iltapala")) return "🍴"; if (t.includes("siirty")) return "🚐"; if (t.includes("hilj")) return "🌙"; return "ℹ️"; }
 function defaultColor(type) { const t = String(type || "").toLowerCase(); if (t.includes("ruoka") || t.includes("aami") || t.includes("lounas") || t.includes("paiv") || t.includes("päiv") || t.includes("iltapala")) return "green"; if (t.includes("siirty")) return "blue"; if (t.includes("hilj")) return "navy"; return "red"; }
 
-// ─── PÄIVÄITEMS ───────────────────────────────────────────────────────────────
 function programRowDate(r) { return normDate(pick(r,["date","paivamaara"])) || parseDateTime(pick(r,["paivamaara","date"])).date; }
 function programRowTime(r) { return normalizeTime(pick(r,["time","aika","start_time","alkuaika"])) || parseDateTime(pick(r,["paivamaara","date"])).time; }
 function programRowEndTime(r) { return normalizeTime(pick(r,["end_time","loppuaika"])); }
 function programSortValue(r, idx) { const order = Number(String(pick(r,["order","jarjestys","sort_order"])).replace(",", ".")); const t = toMin(programRowTime(r)); return (Number.isFinite(order) ? order*10000 : (t ?? 9999)*100) + idx; }
 function isGenericMatchBlock(r) { const title = pick(r,["title","otsikko"],"").toLowerCase(); return title === "otteluita" || title === "ottelut" || title.includes("otteluita"); }
 function hasRealMatchOnDate(date) { return IDX.ottelut.some(m => m.date === date); }
-
 function dayItems(date) {
   const items = [], seen = new Set();
   IDX.ohjelma.forEach((r, idx) => {
-    const d = programRowDate(r);
-    if (d !== date) return;
-    if (isGenericMatchBlock(r) && hasRealMatchOnDate(date)) return;
-    const time = programRowTime(r), endTime = programRowEndTime(r);
-    const type = String(pick(r,["type","tyyppi"])).toLowerCase();
-    const title = pick(r,["title","otsikko"],"Ohjelma");
-    const refId = pick(r,["ref_id","viite_id"]);
-    const placeIdRaw = pick(r,["place_id","paikka_id"]);
-    const desc = pick(r,["description","kuvaus","lisatiedot"]);
-    const menuOld = pick(r,["menu","ruokalista"]);
+    const d = programRowDate(r); if (d !== date) return; if (isGenericMatchBlock(r) && hasRealMatchOnDate(date)) return;
+    const time = programRowTime(r), endTime = programRowEndTime(r), type = String(pick(r,["type","tyyppi"])).toLowerCase(), title = pick(r,["title","otsikko"],"Ohjelma"), refId = pick(r,["ref_id","viite_id"]), placeIdRaw = pick(r,["place_id","paikka_id"]), desc = pick(r,["description","kuvaus","lisatiedot"]), menuOld = pick(r,["menu","ruokalista"]);
     const meal = type.includes("ruokail") ? mealById(refId) : null;
     const placeId = placeIdRaw || meal?.placeId || "";
-    const key = [d,time,endTime,roleKey(type),roleKey(title),refId,placeId,roleKey(desc)].join("|");
-    if (seen.has(key)) return;
-    seen.add(key);
+    const key = [d,time,endTime,roleKey(type),roleKey(title),refId,placeId,roleKey(desc)].join("|"); if (seen.has(key)) return; seen.add(key);
     const sub = [];
     if (type.includes("siirty")) { const route = routeText(r); if (route) sub.push(route); }
     else if (placeId) sub.push(placeText(placeId));
@@ -426,83 +354,26 @@ function dayItems(date) {
     items.push({ source:"ohjelma", date:d, time, endTime, icon:pick(r,["icon","ikoni"]) || meal?.icon || defaultIcon(type || title), color:colorClass(pick(r,["color","vari"]) || defaultColor(type || title)), accent:isTrue(pick(r,["accent","korostus"],"false")), title, sub:sub.join("<br>"), _sortOffset:idx });
   });
   IDX.ottelut.forEach(m => {
-    if (m.date !== date) return;
-    const sub = [];
-    if (m.result) sub.push("Tulos: " + esc(m.result));
-    const place = placeHtmlForMatch(m);
-    if (place) sub.push(place);
-    const placeInfo = placeNotes(m.placeId);
-    if (placeInfo && placeInfo !== m.notes) sub.push(esc(placeInfo));
-    const resultsLink = resultsLinkHtml(m);
-    if (resultsLink) sub.push(resultsLink);
-    if (m.notes) sub.push(esc(m.notes));
-    const roles = talkootForMatch(m);
-    if (roles.length) sub.push(talkooLinesHtml(roles));
+    if (m.date !== date) return; const sub = []; if (m.result) sub.push("Tulos: " + esc(m.result)); const place = placeHtmlForMatch(m); if (place) sub.push(place); const placeInfo = placeNotes(m.placeId); if (placeInfo && placeInfo !== m.notes) sub.push(esc(placeInfo)); const resultsLink = resultsLinkHtml(m); if (resultsLink) sub.push(resultsLink); if (m.notes) sub.push(esc(m.notes)); const roles = talkootForMatch(m); if (roles.length) sub.push(talkooLinesHtml(roles));
     items.push({ source:"ottelu", date:m.date, time:m.time, endTime:m.endTime, icon:"⚾", color:"ic-red", accent:true, title:m.match, sub:sub.join("<br>") });
   });
-
-  items.sort((a,b) => (toMin(a.time) ?? 9999) - (toMin(b.time) ?? 9999) || (a._sortOffset || 0) - (b._sortOffset || 0));
-
-  // Laske status valmiiksi. Ajattomille riveille (time puuttuu) status johdetaan
-  // seuraavasta ajoitetusta tapahtumasta — jos se on jo ohi tai käynnissä,
-  // myös ajaton rivi merkitään menneeksi (harmaaksi).
-  items.forEach(it => { it.status = statusFor(it.date, it.time, it.endTime); });
-  for (let i = 0; i < items.length; i++) {
-    if (toMin(items[i].time) === null) {
-      let nextStatus = null;
-      for (let j = i + 1; j < items.length; j++) {
-        if (toMin(items[j].time) !== null) { nextStatus = items[j].status; break; }
-      }
-      items[i].status = (nextStatus === "past" || nextStatus === "current") ? "past" : (items[i].status || "");
-    }
-  }
-  return items;
+  return items.sort((a,b) => (toMin(a.time) ?? 9999) - (toMin(b.time) ?? 9999) || (a._sortOffset || 0) - (b._sortOffset || 0));
 }
-
-// ─── STATUKSET ────────────────────────────────────────────────────────────────
-function statusFor(date, time, endTime) {
-  if (date !== todayKey()) return todayKey() > date ? "past" : "";
-  const start = toMin(time);
-  if (start === null) return "";
-  const end = toMin(endTime) ?? start + 60, now = minutesNow();
-  if (now >= end) return "past";
-  if (now >= start) return "current";
-  return "future";
-}
+function statusFor(date, time, endTime) { if (date !== todayKey()) return todayKey() > date ? "past" : ""; const start = toMin(time); if (start === null) return ""; const end = toMin(endTime) ?? start + 60, now = minutesNow(); if (now >= end) return "past"; if (now >= start) return "current"; return "future"; }
 function getAutoDayIndex() { const tk = todayKey(), idx = DAYS.findIndex(d => d.key === tk); if (idx >= 0) return idx; return tk < (DAYS[0]?.key || tk) ? 0 : Math.max(0, DAYS.length-1); }
 function getCurrentTab() { return selectedTab !== null ? selectedTab : getAutoDayIndex(); }
+function switchTab(tab) { selectedTab = tab; render(); requestAnimationFrame(() => window.scrollTo({ top:0, left:0, behavior:"auto" })); }
 
-// ─── RENDERÖINTI ─────────────────────────────────────────────────────────────
 function renderTabs() {
-  const cur = getCurrentTab(), tk = todayKey();
-  $("dayTabs").innerHTML = "";
-  $("infoTabs").innerHTML = "";
-  DAYS.forEach((d,i) => {
-    const b = document.createElement("button");
-    b.className = "day-tab" + (i === cur ? " active" : "");
-    b.innerHTML = `<span class="tab-weekday">${d.label}${d.key===tk ? '<span class="today-dot"></span>' : ''}</span><span class="tab-date">${d.dateLabel}</span>`;
-    b.onclick = () => switchTab(i);
-    $("dayTabs").appendChild(b);
-  });
-  [[INFO_TAB_IDS.osoitteet,"📍 Osoitteet"],[INFO_TAB_IDS.yhteystiedot,"📞 Yhteystiedot"],[INFO_TAB_IDS.saa,"🌤️ Sää"]].forEach(([id,label]) => {
-    const b = document.createElement("button");
-    b.className = "info-tab" + (cur === id ? " active" : "");
-    b.innerHTML = label;
-    b.onclick = () => switchTab(id);
-    $("infoTabs").appendChild(b);
-  });
+  const cur = getCurrentTab(), tk = todayKey(); $("dayTabs").innerHTML = ""; $("infoTabs").innerHTML = "";
+  DAYS.forEach((d,i) => { const b = document.createElement("button"); b.className = "day-tab" + (i === cur ? " active" : ""); b.innerHTML = `<span class="tab-weekday">${d.label}${d.key===tk ? '<span class="today-dot"></span>' : ''}</span><span class="tab-date">${d.dateLabel}</span>`; b.onclick = () => switchTab(i); $("dayTabs").appendChild(b); });
+  [[INFO_TAB_IDS.osoitteet,"📍 Osoitteet"],[INFO_TAB_IDS.yhteystiedot,"📞 Yhteystiedot"],[INFO_TAB_IDS.saa,"🌤️ Sää"]].forEach(([id,label]) => { const b = document.createElement("button"); b.className = "info-tab" + (cur === id ? " active" : ""); b.innerHTML = label; b.onclick = () => switchTab(id); $("infoTabs").appendChild(b); });
 }
-
-function eventHtml(it, status="") {
-  return `<div class="event ${status}"><div class="ev-icon ${it.color}">${esc(it.icon || "ℹ️")}</div><div class="ev-body">${it.time ? `<div class="ev-time">${esc(it.time)}${it.endTime ? `–${esc(it.endTime)}` : ""}</div>` : ""}<div class="ev-title ${it.accent ? "accent" : ""}">${esc(it.title)}<span class="badge-now">Nyt</span></div>${it.sub ? `<div class="ev-sub">${it.sub}</div>` : ""}</div></div>`;
-}
-
+function eventHtml(it, status="") { return `<div class="event ${status}"><div class="ev-icon ${it.color}">${esc(it.icon || "ℹ️")}</div><div class="ev-body">${it.time ? `<div class="ev-time">${esc(it.time)}${it.endTime ? `–${esc(it.endTime)}` : ""}</div>` : ""}<div class="ev-title ${it.accent ? "accent" : ""}">${esc(it.title)}<span class="badge-now">Nyt</span></div>${it.sub ? `<div class="ev-sub">${it.sub}</div>` : ""}</div></div>`; }
 function loadErrorsHtml() {
   let html = "";
   if (loadErrors.length) {
-    const hint = sourceStatus.asetukset === "ok"
-      ? "Tarkista Asetukset-välilehden *_csv_url-avaimet tai julkaise arkit uudelleen CSV-muodossa."
-      : "Tarkista Asetukset-arkin kovakoodattu URL (DATA_SOURCES.asetukset koodissa).";
+    const hint = sourceStatus.asetukset === "ok" ? " Tarkista Asetukset-välilehden CSV-linkit tai julkaise välilehdet uudelleen CSV-muodossa." : " Tarkista Asetukset-välilehden julkaistu CSV-linkki koodista.";
     html += `<div class="error-box"><strong>Huom:</strong> kaikkia Google Sheets -välilehtiä ei saatu ladattua.<br>${esc(loadErrors.join(" | "))}<br>${esc(hint)}</div>`;
   }
   if (dataWarnings.length) {
@@ -512,75 +383,21 @@ function loadErrorsHtml() {
   }
   return html;
 }
-
 function hideNext() { $("nextBanner").classList.remove("visible"); }
-
-function renderNext(it) {
-  const banner = $("nextBanner");
-  // Piilota jos ei tapahtumaa, ei tänään, tai aika puuttuu (toMin=null → countdown olisi NaN).
-  if (!it || it.date !== todayKey() || toMin(it.time) === null) { banner.classList.remove("visible"); return; }
-  $("nbTitle").textContent = (it.time ? it.time + " — " : "") + it.title;
-  $("nbSub").innerHTML = it.sub || "";
-  const mins = toMin(it.time) - minutesNow();
-  $("nbCountdown").textContent = mins <= 0 ? "Alkaa nyt!" : Math.floor(mins/60) > 0 ? `Alkaa ${Math.floor(mins/60)} h ${mins%60} min kuluttua` : `Alkaa ${mins} min kuluttua`;
-  banner.classList.add("visible");
-}
-
-function renderDayTab() {
-  const day = DAYS[getCurrentTab()] || DAYS[0];
-  const items = dayItems(day.key);
-  // dayItems() laskee .status-kentän valmiiksi (ml. ajattomat rivit), käytetään sitä suoraan
-  const next = items.find(it => it.status === "future");
-  renderNext(next);
-  let html = loadErrorsHtml();
-  if (!items.length) html += `<p class="small-note">Tälle päivälle ei ole vielä tietoja Google Sheetsissä.</p>`;
-  items.forEach(it => html += eventHtml(it, it.status));
-  $("eventList").innerHTML = html;
-}
-
+function renderNext(it) { const banner = $("nextBanner"); const start = toMin(it?.time); if (!it || it.date !== todayKey() || start === null) { banner.classList.remove("visible"); return; } $("nbTitle").textContent = (it.time ? it.time + " — " : "") + it.title; $("nbSub").innerHTML = it.sub || ""; const mins = start - minutesNow(); $("nbCountdown").textContent = mins <= 0 ? "Alkaa nyt!" : Math.floor(mins/60) > 0 ? `Alkaa ${Math.floor(mins/60)} h ${mins%60} min kuluttua` : `Alkaa ${mins} min kuluttua`; banner.classList.add("visible"); }
+function renderDayTab() { const day = DAYS[getCurrentTab()] || DAYS[0], items = dayItems(day.key), next = items.find(it => statusFor(it.date,it.time,it.endTime)==="future"); renderNext(next); let html = loadErrorsHtml(); if (!items.length) html += `<p class="small-note">Tälle päivälle ei ole vielä tietoja Google Sheetsissä.</p>`; items.forEach(it => html += eventHtml(it, statusFor(it.date,it.time,it.endTime))); $("eventList").innerHTML = html; }
 function renderLeiriohjelmaTab() {
-  hideNext();
-  const byDay = Object.fromEntries(DAYS.map(d => [d.key, []]));
-  IDX.ohjelma.forEach((r,i) => { const d = programRowDate(r); if (byDay[d]) byDay[d].push({row:r,idx:i}); });
-  Object.values(byDay).forEach(a => a.sort((a,b) => programSortValue(a.row,a.idx) - programSortValue(b.row,b.idx)));
-  const maxRows = Math.max(1, ...Object.values(byDay).map(a => a.length));
-  let html = loadErrorsHtml() + `<div class="program-wrap"><div class="program-title">Leiriohjelma</div><div class="program-grid">`;
+  hideNext(); const byDay = Object.fromEntries(DAYS.map(d => [d.key, []])); IDX.ohjelma.forEach((r,i) => { const d = programRowDate(r); if (byDay[d]) byDay[d].push({row:r,idx:i}); }); Object.values(byDay).forEach(a => a.sort((a,b)=>programSortValue(a.row,a.idx)-programSortValue(b.row,b.idx))); const maxRows = Math.max(1, ...Object.values(byDay).map(a => a.length)); let html = loadErrorsHtml() + `<div class="program-wrap"><div class="program-title">Leiriohjelma</div><div class="program-grid">`;
   DAYS.forEach(d => { const dt = new Date(d.key + "T12:00:00"); html += `<div class="program-head">${WD_LONG[dt.getDay()]}<br>${dt.getDate()}.${dt.getMonth()+1}.${dt.getFullYear()}</div>`; });
-  for (let i=0; i<maxRows; i++) {
-    DAYS.forEach(d => {
-      const item = byDay[d.key][i];
-      if (!item) { html += `<div class="program-cell"></div>`; return; }
-      const time = programRowTime(item.row), end = programRowEndTime(item.row);
-      const title = pick(item.row,["title","otsikko"], pick(item.row,["type","tyyppi"],"Ohjelma"));
-      const desc = pick(item.row,["description","kuvaus","notes","lisatiedot"]);
-      const shownTime = pick(item.row,["time","aika"]) || (time ? (end ? `${time}-${end}` : time) : "");
-      html += `<div class="program-cell">${shownTime ? `<span class="program-time">${esc(shownTime)}</span>` : ""}<span class="program-main">${esc(title)}</span>${desc ? `<br>${esc(desc)}` : ""}</div>`;
-    });
-  }
-  html += `</div><div class="program-footnote">${esc(SETTINGS.program_note || SETTINGS.leiriohjelma_note || "*Ruokailuilla on parin tunnin slotit ja ne voivat olla otteluiden kanssa päällekkäin.")}</div></div>`;
-  $("eventList").innerHTML = html;
+  for (let i=0; i<maxRows; i++) DAYS.forEach(d => { const item = byDay[d.key][i]; if (!item) { html += `<div class="program-cell"></div>`; return; } const time = programRowTime(item.row), end = programRowEndTime(item.row), title = pick(item.row,["title","otsikko"], pick(item.row,["type","tyyppi"],"Ohjelma")), desc = pick(item.row,["description","kuvaus","notes","lisatiedot"]), shownTime = pick(item.row,["time","aika"]) || (time ? (end ? `${time}-${end}` : time) : ""); html += `<div class="program-cell">${shownTime ? `<span class="program-time">${esc(shownTime)}</span>` : ""}<span class="program-main">${esc(title)}</span>${desc ? `<br>${esc(desc)}` : ""}</div>`; });
+  html += `</div><div class="program-footnote">${esc(SETTINGS.program_note || SETTINGS.leiriohjelma_note || "*-Ruokailuilla on parin tunnin slotit ja ne voivat olla otteluiden kanssa päällekkäin. Huolehditaan, että kaikki käyvät syömässä.")}</div></div>`; $("eventList").innerHTML = html;
 }
-
-function renderOsoitteetTab() {
-  hideNext();
-  let html = loadErrorsHtml(), groups = {};
-  visibleRows(DATA.osoitteet).forEach(r => { const c = pick(r,["category","kategoria"],"Muut"); (groups[c] ||= []).push(r); });
-  Object.entries(groups).forEach(([cat,rows]) => {
-    html += `<div class="section-title">${esc(cap(cat))}</div>`;
-    rows.forEach(r => {
-      const name = pick(r,["name","nimi"]), addr = pick(r,["address","osoite"]);
-      const q = pick(r,["maps_query","karttahaku"], [name,addr].filter(Boolean).join(", "));
-      html += `<div class="addr-card"><div class="ev-icon ic-red">📍</div><div class="ev-body"><h3>${esc(name || pick(r,["place_id"],"Paikka"))}</h3><p>${addr ? esc(addr)+"<br>" : ""}${mapLink("Avaa kartassa", q)}${pick(r,["notes","lisatiedot"]) ? "<br>"+esc(pick(r,["notes","lisatiedot"])) : ""}</p></div></div>`;
-    });
-  });
-  $("eventList").innerHTML = html || `<p class="small-note">Osoitteita ei vielä ole.</p>`;
-}
-
+function renderOsoitteetTab() { hideNext(); let html = loadErrorsHtml(), groups = {}; visibleRows(DATA.osoitteet).forEach(r => { const c = pick(r,["category","kategoria"],"Muut"); (groups[c] ||= []).push(r); }); Object.entries(groups).forEach(([cat,rows]) => { html += `<div class="section-title">${esc(cap(cat))}</div>`; rows.forEach(r => { const name = pick(r,["name","nimi"]), addr = pick(r,["address","osoite"]), q = pick(r,["maps_query","karttahaku"], [name,addr].filter(Boolean).join(", ")); html += `<div class="addr-card"><div class="ev-icon ic-red">📍</div><div class="ev-body"><h3>${esc(name || pick(r,["place_id"],"Paikka"))}</h3><p>${addr ? esc(addr)+"<br>" : ""}${mapLink("Avaa kartassa", q)}${pick(r,["notes","lisatiedot"]) ? "<br>"+esc(pick(r,["notes","lisatiedot"])) : ""}</p></div></div>`; }); }); $("eventList").innerHTML = html || `<p class="small-note">Osoitteita ei vielä ole.</p>`; }
 function contactUrl(row) {
   const direct = pick(row,["url","linkki","website","nettisivu","www","link"]);
   const notes = pick(row,["notes","lisatiedot"]);
-  if (direct) return direct;
-  return /^https?:\/\//i.test(String(notes).trim()) ? String(notes).trim() : "";
+  if (direct) return safeExternalUrl(direct);
+  return safeExternalUrl(notes);
 }
 function isContactLinkRow(row) {
   const cat = normKey(pick(row,["category","kategoria"]));
@@ -593,10 +410,10 @@ function renderContactLinkCard(r) {
   const role = pick(r,["role","rooli"]);
   const notes = pick(r,["notes","lisatiedot"]);
   const noteText = notes && notes !== url ? `<br>${esc(notes)}` : "";
-  const linkHtml = url ? `<a class="maplink" href="${esc(url)}" target="_blank" rel="noopener">🔗 Avaa linkki</a>` : `<span class="small-note">Linkki puuttuu Yhteystiedot-välilehdeltä.</span>`;
+  const safeUrl = safeExternalUrl(url);
+  const linkHtml = safeUrl ? `<a class="maplink" href="${esc(safeUrl)}" target="_blank" rel="noopener">🔗 Avaa linkki</a>` : `<span class="small-note">Linkki puuttuu tai ei ole http(s)-muodossa.</span>`;
   return `<div class="addr-card"><div class="ev-icon ic-blue">🔗</div><div class="ev-body"><h3>${esc(title)}</h3><p>${role && role !== title ? `<strong>${esc(role)}</strong><br>` : ""}${linkHtml}${noteText}</p></div></div>`;
 }
-
 function contactGroupOrder(cat) {
   const k = normKey(cat);
   if (k === "kanslia" || k.includes("kanslia")) return 10;
@@ -609,9 +426,9 @@ function renderYhteystiedotTab() {
   let html = loadErrorsHtml(), groups = {};
   const links = [], contacts = [];
   IDX.contacts.forEach(r => (isContactLinkRow(r) ? links : contacts).push(r));
-  links.forEach(r => { html += renderContactLinkCard(r); });
+  if (links.length) links.forEach(r => { html += renderContactLinkCard(r); });
   contacts.forEach(r => { const c = pick(r,["category","kategoria"],"Yhteystiedot"); (groups[c] ||= []).push(r); });
-  Object.entries(groups).sort((a,b) => contactGroupOrder(a[0]) - contactGroupOrder(b[0]) || String(a[0]).localeCompare(String(b[0]),"fi")).forEach(([cat,rows]) => {
+  Object.entries(groups).sort((a,b) => contactGroupOrder(a[0]) - contactGroupOrder(b[0]) || String(a[0]).localeCompare(String(b[0]), "fi")).forEach(([cat,rows]) => {
     html += `<div class="section-title">${esc(cap(cat))}</div>`;
     rows.forEach(r => {
       const phone = pick(r,["phone","puhelin"]), email = pick(r,["email","sahkoposti"]), tel = phone ? String(phone).replace(/[^+\d]/g,"") : "";
@@ -621,100 +438,39 @@ function renderYhteystiedotTab() {
   $("eventList").innerHTML = html || `<p class="small-note">Yhteystietoja ei vielä ole.</p>`;
 }
 
-// ─── SÄÄ ─────────────────────────────────────────────────────────────────────
-async function fetchWeather() {
-  const lat = parseNumberFi(SETTINGS.weather_lat, 64.913);
-  const lon = parseNumberFi(SETTINGS.weather_lon, 25.503);
-  try {
-    // cachebust pakottaa uuden haun myös välityspalvelinten kautta
-    const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&wind_speed_unit=ms&timezone=Europe%2FHelsinki&forecast_days=16&cachebust=${Date.now()}`);
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    weatherData = await res.json(); weatherData._fetched = new Date(); weatherError = "";
-    if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents();
-  } catch(e) { weatherData = null; weatherError = e.message || String(e); if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); }
-}
-
-function renderWeatherTab() {
-  hideNext();
-  let html = loadErrorsHtml();
-  if (!weatherData?.hourly) {
-    $("eventList").innerHTML = html + `<p class="small-note" style="text-align:center;margin-top:20px;">Sääennustetta haetaan…${weatherError ? `<br><strong>Virhe:</strong> ${esc(weatherError)}` : ""}</p>`;
-    return;
-  }
-  const H = weatherData.hourly, tk = todayKey(), nowH = nowFi().getHours();
-  const showHours = new Set([0,3,6,9,12,15,18,21]);
-  const byDay = {};
-  H.time.forEach((t,i) => {
-    const [date,hm] = t.split("T"), hour = parseInt(hm.slice(0,2),10);
-    if (!showHours.has(hour) || (date === tk && hour < nowH-2) || date < tk) return;
-    (byDay[date] ||= []).push({hour, temp:Math.round(H.temperature_2m[i]), code:H.weather_code[i], rain:H.precipitation_probability[i], wind:Math.round(H.wind_speed_10m[i])});
-  });
-  const f = weatherData._fetched;
-  html += `<p class="small-note">Sääennuste · ${esc(SETTINGS.weather_location || SETTINGS.weather_place || "Kempele")} — päivitetty ${String(f.getHours()).padStart(2,"0")}:${String(f.getMinutes()).padStart(2,"0")} (Open-Meteo)</p>`;
-  Object.keys(byDay).sort().forEach(date => {
-    const isCamp = DAYS.some(d => d.key === date), d = new Date(date+"T12:00:00");
-    html += `<div style="background:var(--card);border:${isCamp ? "2px solid var(--red)" : "1px solid var(--border)"};border-radius:12px;padding:10px 0 6px;margin-bottom:10px;"><div style="font-size:14px;font-weight:700;color:var(--text);padding:0 14px 6px;">${WD[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}. ${date===todayKey()?'<span class="tag">Tänään</span>':''} ${isCamp?'<span class="tag" style="background:var(--red);">⚾ Leiripäivä</span>':''}</div><div style="display:flex;overflow-x:auto;gap:2px;padding:0 8px;-webkit-overflow-scrolling:touch;">`;
-    byDay[date].forEach(h => { const [emoji] = WMO[h.code] || ["🌡️","Sää"]; html += `<div style="min-width:56px;text-align:center;padding:4px 2px;"><div style="font-size:11px;font-weight:700;color:var(--sub);">${String(h.hour).padStart(2,"0")}</div><div style="font-size:22px;line-height:1.3;">${emoji}</div><div style="font-size:14px;font-weight:700;color:var(--red);">${h.temp}°</div><div style="font-size:10.5px;color:#2B5FA8;">💧 ${h.rain}%</div><div style="font-size:10.5px;color:var(--sub);">${h.wind} m/s</div></div>`; });
-    html += `</div></div>`;
-  });
-  $("eventList").innerHTML = html;
-}
-
-// ─── PÄÄSILMUKKA ─────────────────────────────────────────────────────────────
-function renderEvents() {
-  const tab = getCurrentTab();
-  if (tab === INFO_TAB_IDS.osoitteet) return renderOsoitteetTab();
-  if (tab === INFO_TAB_IDS.yhteystiedot) return renderYhteystiedotTab();
-  if (tab === INFO_TAB_IDS.saa) return renderWeatherTab();
-  return renderDayTab();
-}
+async function fetchWeather() { const lat = parseNumberFi(SETTINGS.weather_lat,64.913), lon = parseNumberFi(SETTINGS.weather_lon,25.503); try { const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&wind_speed_unit=ms&timezone=Europe%2FHelsinki&forecast_days=16&cachebust=${Date.now()}`); if (!res.ok) throw new Error("HTTP "+res.status); weatherData = await res.json(); weatherData._fetched = new Date(); weatherError = ""; if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } catch(e) { weatherData = null; weatherError = e.message || String(e); if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } }
+function renderWeatherTab() { hideNext(); let html = loadErrorsHtml(); if (!weatherData?.hourly) { $("eventList").innerHTML = html + `<p class="small-note" style="text-align:center;margin-top:20px;">Sääennustetta haetaan…${weatherError ? `<br><strong>Virhe:</strong> ${esc(weatherError)}` : ""}</p>`; return; } const H = weatherData.hourly, tk = todayKey(), nowH = nowFi().getHours(), showHours = new Set([0,3,6,9,12,15,18,21]), byDay = {}; H.time.forEach((t,i) => { const [date,hm] = t.split("T"), hour = parseInt(hm.slice(0,2),10); if (!showHours.has(hour) || (date === tk && hour < nowH-2) || date < tk) return; (byDay[date] ||= []).push({hour,temp:Math.round(H.temperature_2m[i]),code:H.weather_code[i],rain:H.precipitation_probability[i],wind:Math.round(H.wind_speed_10m[i])}); }); const f = weatherData._fetched; html += `<p class="small-note">Sääennuste · ${esc(SETTINGS.weather_location || SETTINGS.weather_place || "Kempele")} — päivitetty ${String(f.getHours()).padStart(2,"0")}:${String(f.getMinutes()).padStart(2,"0")} (Open-Meteo)</p>`; Object.keys(byDay).sort().forEach(date => { const isCamp = DAYS.some(d => d.key === date), d = new Date(date+"T12:00:00"); html += `<div style="background:var(--card);border:${isCamp ? "2px solid var(--red)" : "1px solid var(--border)"};border-radius:12px;padding:10px 0 6px;margin-bottom:10px;"><div style="font-size:14px;font-weight:700;color:var(--text);padding:0 14px 6px;">${WD[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}. ${date===todayKey()?'<span class="tag">Tänään</span>':''} ${isCamp?'<span class="tag" style="background:var(--red);">⚾ Leiripäivä</span>':''}</div><div style="display:flex;overflow-x:auto;gap:2px;padding:0 8px;-webkit-overflow-scrolling:touch;">`; byDay[date].forEach(h => { const [emoji] = WMO[h.code] || ["🌡️","Sää"]; html += `<div style="min-width:56px;text-align:center;padding:4px 2px;"><div style="font-size:11px;font-weight:700;color:var(--sub);">${String(h.hour).padStart(2,"0")}</div><div style="font-size:22px;line-height:1.3;">${emoji}</div><div style="font-size:14px;font-weight:700;color:var(--red);">${h.temp}°</div><div style="font-size:10.5px;color:#2B5FA8;">💧 ${h.rain}%</div><div style="font-size:10.5px;color:var(--sub);">${h.wind} m/s</div></div>`; }); html += `</div></div>`; }); $("eventList").innerHTML = html; }
+function renderEvents() { const tab = getCurrentTab(); if (tab === INFO_TAB_IDS.osoitteet) return renderOsoitteetTab(); if (tab === INFO_TAB_IDS.yhteystiedot) return renderYhteystiedotTab(); if (tab === INFO_TAB_IDS.saa) return renderWeatherTab(); return renderDayTab(); }
 function renderClock() { const n = nowFi(); $("clock").textContent = `${["su","ma","ti","ke","to","pe","la"][n.getDay()]} ${n.getDate()}.${n.getMonth()+1}. klo ${String(n.getHours()).padStart(2,"0")}:${String(n.getMinutes()).padStart(2,"0")}`; }
 function renderStaleNote() {
   const el = $("dataStaleNote");
-  if (!lastDataLoadAt) { el.style.display = "none"; return; }
-  const mins = Math.round((Date.now() - lastDataLoadAt.getTime()) / 60000);
+  if (!el || !lastDataLoadAt) { if (el) el.style.display = "none"; return; }
+  const mins = Math.max(0, Math.round((Date.now() - lastDataLoadAt.getTime()) / 60000));
   const label = mins < 1 ? "alle minuutti sitten" : mins === 1 ? "1 min sitten" : `${mins} min sitten`;
-  el.textContent = (lastDataLoadFailed ? "⚠️ Tietoja ei saatu päivitettyä — " : "Tiedot päivitetty ") + label;
+  el.textContent = (lastDataLoadFailed ? "⚠️ Tietoja ei saatu kaikilta välilehdiltä — viimeisin yritys " : "Tiedot päivitetty ") + label;
   el.style.display = "block";
 }
-function switchTab(tab) { selectedTab = tab; render(); requestAnimationFrame(() => window.scrollTo({ top:0, left:0, behavior:"auto" })); }
 function render() { renderTabs(); renderEvents(); renderClock(); renderStaleNote(); }
 function cap(s) { s = String(s || ""); return s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g," "); }
-
-async function refreshData(isInitial) {
-  const { data, errors } = await loadAllData();
-  // Jos haku epäonnistuu täysin (ei verkkoyhteyttä), pidetään aiempi data voimassa.
-  // "Täysin epäonnistunut" = kaikki arkit tyhjiä JA virheitä on. Tällöin ei
-  // korvata vanhaa dataa tyhjällä — käyttäjä näkee vanhan tiedon + stale-bannerin.
-  const gotAnything = Object.values(data).some(rows => rows.length > 0);
-  if (isInitial || gotAnything || !Object.keys(DATA).length) {
-    DATA = data;
-    buildState();
-  }
-  loadErrors = errors;
-  lastDataLoadFailed = errors.length > 0;
-  lastDataLoadAt = new Date();
-  if (!isInitial) render();
-}
-
-async function init() {
-  renderClock();
+async function refreshData(isInitial=false) {
   try {
-    await refreshData(true);
-    selectedTab = getAutoDayIndex();
+    await loadAllData();
+    buildState();
+    if (isInitial) selectedTab = getAutoDayIndex();
     render();
-    fetchWeather();
-  } catch(err) {
-    $("eventList").innerHTML = `<div class="error-box"><strong>Tietojen lataus epäonnistui.</strong><br>${esc(err.message)}<br>Päivitä sivu hetken kuluttua.</div>`;
+  } catch (err) {
+    loadErrors = [err.message || String(err)];
+    lastDataLoadFailed = true;
+    lastDataLoadAt = new Date();
+    if (isInitial) $("eventList").innerHTML = `<div class="error-box"><strong>Tietojen lataus epäonnistui.</strong><br>${esc(err.message || err)}<br>Päivitä sivu hetken kuluttua.</div>`;
+    else render();
   }
 }
-
+async function init() { renderClock(); await refreshData(true); fetchWeather(); }
 init();
 setInterval(renderClock, 1000);
-setInterval(fetchWeather, 60 * 60 * 1000);
+setInterval(fetchWeather, 60*60*1000);
 setInterval(() => refreshData(false), DATA_REFRESH_MS);
-// UI-päivitys 30s välein: kaikilla välilehdillä ajetaan render() jotta
-// "Nyt"-badge, past-opasiteetti ja stale-note pysyvät ajan tasalla.
 setInterval(render, 30000);
 </script>
 </body>
