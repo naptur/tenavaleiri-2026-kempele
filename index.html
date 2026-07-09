@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: tab-scroll-place-notes-contact-order-2026-07-09 -->
+<!-- version: mobile-a11y-error-handling-2026-07-09 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -17,20 +17,20 @@
   header h1{font-size:21px;font-weight:700} header .team{font-size:13px;opacity:.95;margin-top:2px} header .clock{font-size:12px;opacity:.9;margin-top:3px}
   @media(max-width:430px){header .head-text{padding-right:0;text-align:left}header h1{font-size:18px}}
   .day-tabs,.info-tabs{display:flex;overflow-x:auto;scrollbar-width:none}.day-tabs::-webkit-scrollbar,.info-tabs::-webkit-scrollbar{display:none}.day-tabs{background:var(--darkred)}.info-tabs{background:#7E1111;-webkit-overflow-scrolling:touch}
-  .day-tab,.info-tab{cursor:pointer;border:none;background:transparent;border-bottom:3px solid transparent;color:rgba(255,255,255,.7);font-weight:600;text-align:center}.day-tab{flex:1 0 54px;padding:10px 2px;font-size:12px;line-height:1.25}.info-tab{flex:1 0 auto;white-space:nowrap;padding:10px 12px;font-size:13px}.day-tab.active,.info-tab.active{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,.08)}.tab-weekday{display:block;font-size:13px}.tab-date{display:block;font-size:11px;opacity:.85}.today-dot{display:inline-block;width:6px;height:6px;background:#FFD24A;border-radius:50%;margin-left:4px;vertical-align:middle}
-  main{max-width:600px;margin:0 auto;padding:14px 12px}.next-banner{background:var(--now-bg);border:2px solid var(--now-border);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:none}.next-banner.visible{display:block}.nb-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#A87800;margin-bottom:3px}.nb-title{font-size:16px;font-weight:700}.nb-sub{font-size:13px;color:var(--sub);margin-top:2px;line-height:1.45}.nb-countdown{font-size:13px;font-weight:600;color:#A87800;margin-top:4px}
-  .event,.addr-card{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px}.event.past{opacity:.48}.event.current{border:2px solid var(--now-border);background:var(--now-bg);box-shadow:0 2px 10px rgba(232,168,0,.2)}.event.open{border-color:var(--now-border);background:var(--now-bg)}
+  .day-tab,.info-tab{cursor:pointer;border:none;background:transparent;border-bottom:3px solid transparent;color:rgba(255,255,255,.82);font-weight:600;text-align:center;min-height:44px}.day-tab{flex:1 0 54px;padding:10px 2px;font-size:12.5px;line-height:1.25}.info-tab{flex:1 0 auto;white-space:nowrap;padding:10px 12px;font-size:13.5px}.day-tab.active,.info-tab.active{color:#fff;border-bottom-color:#fff;background:rgba(255,255,255,.10)}.day-tab:focus-visible,.info-tab:focus-visible,a:focus-visible,button:focus-visible{outline:3px solid #FFD24A;outline-offset:-3px}.tab-weekday{display:block;font-size:13.5px}.tab-date{display:block;font-size:12px;opacity:.9}.today-dot{display:inline-block;width:6px;height:6px;background:#FFD24A;border-radius:50%;margin-left:4px;vertical-align:middle}
+  main{max-width:600px;margin:0 auto;padding:14px 12px;scroll-margin-top:130px}.next-banner{background:var(--now-bg);border:2px solid var(--now-border);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:none}.next-banner.visible{display:block}.nb-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#A87800;margin-bottom:3px}.nb-title{font-size:16px;font-weight:700}.nb-sub{font-size:13px;color:var(--sub);margin-top:2px;line-height:1.45}.nb-countdown{font-size:13px;font-weight:600;color:#A87800;margin-top:4px}
+  .event,.addr-card{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px}.event.past{opacity:.78}.event.past .ev-time::after{content:" · mennyt";color:var(--sub);font-weight:600}.event.current{border:2px solid var(--now-border);background:var(--now-bg);box-shadow:0 2px 10px rgba(232,168,0,.2)}.event.open{border-color:var(--now-border);background:var(--now-bg)}
   .badge-now{display:none;background:var(--now-border);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle;text-transform:uppercase}.event.current .badge-now{display:inline-block}
   .ev-icon{width:40px;height:40px;min-width:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff}.ic-red{background:var(--red)}.ic-green{background:var(--green)}.ic-navy{background:var(--navy)}.ic-darkred{background:var(--darkred)}.ic-blue{background:var(--blue)}.ic-transfer{background:#6B7280}
-  .ev-body{flex:1;min-width:0}.ev-time{font-size:12px;font-weight:700;color:var(--red);margin-bottom:1px}.ev-title{font-size:15px;font-weight:700;line-height:1.35}.ev-title.accent{color:var(--red)}.ev-sub{font-size:12.5px;color:var(--sub);margin-top:3px;line-height:1.45;overflow-wrap:anywhere}.addr-card h3{font-size:15px;color:var(--red);margin-bottom:3px}.addr-card p{font-size:13px;color:var(--sub);line-height:1.55}a.maplink{color:var(--red);font-weight:600;text-decoration:underline;text-underline-offset:2px}.resultlink{display:inline-block;margin-top:2px;color:var(--red);font-weight:700;text-decoration:underline;text-underline-offset:2px}
-  .small-note{font-size:12px;color:var(--sub);margin:2px 4px 12px;line-height:1.45}.section-title{font-size:16px;font-weight:700;color:var(--red);margin:14px 4px 8px}.tag{display:inline-block;background:var(--now-border);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;vertical-align:middle;text-transform:uppercase}.error-box{background:var(--bad-bg);border:1px solid #f0b5b5;border-radius:12px;padding:12px 14px;margin-bottom:12px;color:#8a1111;font-size:13px;line-height:1.5}
+  .ev-body{flex:1;min-width:0}.ev-time{font-size:13px;font-weight:700;color:var(--red);margin-bottom:1px}.ev-title{font-size:16px;font-weight:700;line-height:1.35;margin:0}.ev-title.accent{color:var(--red)}.ev-sub{font-size:14px;color:#5F5F6A;margin-top:4px;line-height:1.48;overflow-wrap:anywhere}.addr-card h3{font-size:16px;color:var(--red);margin-bottom:3px}.addr-card p{font-size:14px;color:#5F5F6A;line-height:1.55}a.maplink{color:var(--red);font-weight:600;text-decoration:underline;text-underline-offset:2px}.resultlink{display:inline-block;margin-top:2px;color:var(--red);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+  .small-note{font-size:13px;color:#5F5F6A;margin:2px 4px 12px;line-height:1.45}.section-title{font-size:17px;font-weight:700;color:var(--red);margin:14px 4px 8px}.tag{display:inline-block;background:var(--now-border);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;vertical-align:middle;text-transform:uppercase}.error-box{background:var(--bad-bg);border:1px solid #f0b5b5;border-radius:12px;padding:12px 14px;margin-bottom:12px;color:#8a1111;font-size:14px;line-height:1.5}.error-box details{margin-top:6px}.error-box summary{cursor:pointer;font-weight:700}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .program-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:14px}.program-title{text-align:center;color:#0B3D63;font-size:24px;font-weight:800;letter-spacing:.5px;margin:4px 0 14px;text-transform:uppercase}.program-grid{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));border-top:2px solid #8FA2FF;border-left:2px solid #8FA2FF;min-width:780px}.program-head{background:#CFD7FF;border-right:2px solid #8FA2FF;border-bottom:2px solid #8FA2FF;text-align:center;font-weight:800;font-size:12px;line-height:1.25;padding:10px 6px;text-transform:uppercase}.program-cell{border-right:2px solid #8FA2FF;border-bottom:2px solid #8FA2FF;min-height:68px;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px 7px;font-size:13px;line-height:1.25;white-space:pre-line}.program-time{font-weight:500;display:block;margin-bottom:2px}.program-main{font-weight:650}.program-footnote{color:#0B3D63;font-size:12px;font-style:italic;line-height:1.45;margin:10px 2px 2px}
-  @media(max-width:620px){.program-wrap{margin-left:-4px;margin-right:-4px;border-radius:12px;padding:10px 8px}.program-title{font-size:21px}.program-grid{grid-template-columns:repeat(6,128px);min-width:768px}.program-cell{font-size:12.5px;min-height:66px;padding:9px 6px}} footer{text-align:center;font-size:11px;color:#AAA;margin-top:24px}
+  @media(max-width:620px){.program-wrap{margin-left:-4px;margin-right:-4px;border-radius:12px;padding:10px 8px}.program-title{font-size:21px}.program-grid{grid-template-columns:repeat(6,128px);min-width:768px}.program-cell{font-size:12.5px;min-height:66px;padding:9px 6px}} footer{text-align:center;font-size:12px;color:#777;margin-top:24px}
 </style>
 </head>
 <body>
-<div class="topbar"><header><img class="logo" src="logo.png" alt="Joukkueen logo" onerror="this.style.visibility='hidden'"><div class="head-text"><h1 id="siteTitle">Tenavaleiri 2026</h1><div class="team" id="teamLine">Ladataan tietoja...</div><div class="clock" id="clock"></div></div></header><div class="day-tabs" id="dayTabs"></div><div class="info-tabs" id="infoTabs"></div></div>
-<main><div class="next-banner" id="nextBanner"><div class="nb-label">Seuraavaksi</div><div class="nb-title" id="nbTitle"></div><div class="nb-sub" id="nbSub"></div><div class="nb-countdown" id="nbCountdown"></div></div><div id="eventList"><p class="small-note" style="text-align:center;margin-top:20px;">Ladataan Google Sheets -tietoja...</p></div><footer id="footerText">Tenavaleiri 2026</footer></main>
+<div class="topbar"><header><img class="logo" src="logo.png" alt="Joukkueen logo" onerror="this.style.visibility='hidden'"><div class="head-text"><h1 id="siteTitle">Tenavaleiri 2026</h1><div class="team" id="teamLine">Ladataan tietoja...</div><div class="clock" id="clock"></div></div></header><div class="day-tabs" id="dayTabs" role="tablist" aria-label="Päivävalinta"></div><div class="info-tabs" id="infoTabs" role="tablist" aria-label="Lisätiedot"></div></div>
+<main id="mainContent" role="main" tabindex="-1"><div class="next-banner" id="nextBanner" aria-live="polite"><div class="nb-label">Seuraavaksi</div><div class="nb-title" id="nbTitle"></div><div class="nb-sub" id="nbSub"></div><div class="nb-countdown" id="nbCountdown"></div></div><div id="eventList" aria-live="polite"><p class="small-note" style="text-align:center;margin-top:20px;">Ladataan Google Sheets -tietoja...</p></div><footer id="footerText">Tenavaleiri 2026</footer></main>
 <script>
 const DATA_SOURCES = {
   // Asetukset on ainoa koodiin kiinnitetty CSV-lähde.
@@ -60,6 +60,18 @@ const safeExternalUrl = url => {
   if (/^www\./i.test(u)) u = "https://" + u;
   return /^https?:\/\//i.test(u) ? u : "";
 };
+async function fetchWithTimeout(url, options={}, timeoutMs=12000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } catch (err) {
+    if (err?.name === "AbortError") throw new Error("Lataus aikakatkaistiin");
+    throw err;
+  } finally {
+    clearTimeout(timer);
+  }
+}
 const isTrue = v => String(v ?? "").trim().toLowerCase() !== "false" && String(v ?? "").trim() !== "0";
 const pick = (obj, keys, fallback="") => { for (const k of keys) if (obj && obj[k] !== undefined && obj[k] !== "") return obj[k]; return fallback; };
 const normKey = s => String(s || "").trim().toLowerCase().replace(/ä/g,"a").replace(/ö/g,"o").replace(/å/g,"a").replace(/[^a-z0-9]+/g,"_").replace(/^_+|_+$/g,"");
@@ -88,7 +100,7 @@ async function loadCsv(name, url) {
   url = String(url || "").trim();
   if (!url) return [];
   const sep = url.includes("?") ? "&" : "?";
-  const res = await fetch(url + sep + "cachebust=" + Date.now(), { cache:"no-store" });
+  const res = await fetchWithTimeout(url + sep + "cachebust=" + Date.now(), { cache:"no-store" }, 12000);
   if (!res.ok) throw new Error(name + ": HTTP " + res.status);
   return parseCsv(await res.text());
 }
@@ -297,20 +309,20 @@ function talkootForMatch(m) {
 }
 function talkooLinesHtml(rows, open="N.N.") { return rows.map(r => { const role = pick(r,["role","rooli"],"Rooli"); const person = pick(r,["person","henkilo"], open); const notes = pick(r,["notes","lisatiedot"]); return `<div style="margin-top:3px;">• <strong>${esc(role)}:</strong> ${esc(person)}${notes ? `<br><span style="color:var(--sub);margin-left:10px;">${esc(notes)}</span>` : ""}</div>`; }).join(""); }
 
-function mapLink(label, query) { if (!query) return esc(label || "Paikka tarkentuu"); return `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}" target="_blank" rel="noopener">📍 ${esc(label)}</a>`; }
+function mapLink(label, query, ariaLabel="") { if (!query) return esc(label || "Paikka tarkentuu"); const a11y = ariaLabel || `Avaa kartassa: ${label}`; return `<a class="maplink" aria-label="${esc(a11y)}" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}" target="_blank" rel="noopener"><span aria-hidden="true">📍</span> ${esc(label)}</a>`; }
 function placeObj(placeId) { const id = cleanId(placeId); return PLACES[id] || PLACES[idKey(id)] || null; }
 function placePlain(placeId, fallback="") { const p = placeObj(placeId); return p ? pick(p,["name","nimi"], placeId) : fallback; }
 function placeAddress(placeId) { const p = placeObj(placeId); return p ? pick(p,["address","osoite"]) : ""; }
 function placeNotes(placeId) { const p = placeObj(placeId); return p ? pick(p,["notes","lisatiedot"]) : ""; }
-function placeText(placeId, fallback="") { const p = placeObj(placeId); if (!p) return fallback ? esc(fallback) : ""; const name = pick(p,["name","nimi"], placeId); const addr = pick(p,["address","osoite"]); const q = pick(p,["maps_query","karttahaku"], [name,addr].filter(Boolean).join(", ")); return mapLink(addr ? `${name} (${addr})` : name, q); }
-function placeHtmlForMatch(m) { if (m.placeId) return placeText(m.placeId); if (m.stadium || m.address) return mapLink(m.stadium || m.address, [m.stadium,m.address].filter(Boolean).join(", ")); return ""; }
+function placeText(placeId, fallback="") { const p = placeObj(placeId); if (!p) return fallback ? esc(fallback) : ""; const name = pick(p,["name","nimi"], placeId); const addr = pick(p,["address","osoite"]); const q = pick(p,["maps_query","karttahaku"], [name,addr].filter(Boolean).join(", ")); return mapLink(addr ? `${name} (${addr})` : name, q, `Avaa kartassa: ${name}`); }
+function placeHtmlForMatch(m) { if (m.placeId) return placeText(m.placeId); if (m.stadium || m.address) return mapLink(m.stadium || m.address, [m.stadium,m.address].filter(Boolean).join(", "), `Avaa kartassa: ${m.stadium || m.address}`); return ""; }
 function resultsUrlForMatch(m) {
   const direct = pick(m,["linkki","url","results_url","pesistulokset_url","tulospalvelu_url","ottelu_url","match_url","link"]);
   return direct || SETTINGS.pesistulokset_url || SETTINGS.results_url || SETTINGS.tulospalvelu_url || "";
 }
 function resultsLinkHtml(m) {
   const url = safeExternalUrl(resultsUrlForMatch(m));
-  return url ? `<a class="resultlink" href="${esc(url)}" target="_blank" rel="noopener">🔗 Pesistulokset</a>` : "";
+  return url ? `<a class="resultlink" aria-label="Avaa ottelu Pesistuloksissa: ${esc(m.match || "ottelu")}" href="${esc(url)}" target="_blank" rel="noopener"><span aria-hidden="true">🔗</span> Pesistulokset</a>` : "";
 }
 function routeText(row) {
   const start = pick(row,["start_destination","lahtopaikka"]);
@@ -362,24 +374,54 @@ function dayItems(date) {
 function statusFor(date, time, endTime) { if (date !== todayKey()) return todayKey() > date ? "past" : ""; const start = toMin(time); if (start === null) return ""; const end = toMin(endTime) ?? start + 60, now = minutesNow(); if (now >= end) return "past"; if (now >= start) return "current"; return "future"; }
 function getAutoDayIndex() { const tk = todayKey(), idx = DAYS.findIndex(d => d.key === tk); if (idx >= 0) return idx; return tk < (DAYS[0]?.key || tk) ? 0 : Math.max(0, DAYS.length-1); }
 function getCurrentTab() { return selectedTab !== null ? selectedTab : getAutoDayIndex(); }
-function switchTab(tab) { selectedTab = tab; render(); requestAnimationFrame(() => window.scrollTo({ top:0, left:0, behavior:"auto" })); }
+function switchTab(tab) { selectedTab = tab; render(); requestAnimationFrame(() => { window.scrollTo({ top:0, left:0, behavior:"auto" }); $("mainContent")?.focus({ preventScroll:true }); }); }
 
 function renderTabs() {
-  const cur = getCurrentTab(), tk = todayKey(); $("dayTabs").innerHTML = ""; $("infoTabs").innerHTML = "";
-  DAYS.forEach((d,i) => { const b = document.createElement("button"); b.className = "day-tab" + (i === cur ? " active" : ""); b.innerHTML = `<span class="tab-weekday">${d.label}${d.key===tk ? '<span class="today-dot"></span>' : ''}</span><span class="tab-date">${d.dateLabel}</span>`; b.onclick = () => switchTab(i); $("dayTabs").appendChild(b); });
-  [[INFO_TAB_IDS.osoitteet,"📍 Osoitteet"],[INFO_TAB_IDS.yhteystiedot,"📞 Yhteystiedot"],[INFO_TAB_IDS.saa,"🌤️ Sää"]].forEach(([id,label]) => { const b = document.createElement("button"); b.className = "info-tab" + (cur === id ? " active" : ""); b.innerHTML = label; b.onclick = () => switchTab(id); $("infoTabs").appendChild(b); });
+  const cur = getCurrentTab(), tk = todayKey();
+  const dayTabs = $("dayTabs"), infoTabs = $("infoTabs");
+  dayTabs.innerHTML = "";
+  infoTabs.innerHTML = "";
+  DAYS.forEach((d,i) => {
+    const b = document.createElement("button");
+    const active = i === cur;
+    b.className = "day-tab" + (active ? " active" : "");
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", active ? "true" : "false");
+    if (active) b.setAttribute("aria-current", "page");
+    b.setAttribute("aria-controls", "eventList");
+    b.setAttribute("aria-label", `${d.label} ${d.dateLabel}${d.key===tk ? ", tänään" : ""}`);
+    b.innerHTML = `<span class="tab-weekday">${d.label}${d.key===tk ? '<span class="today-dot" aria-hidden="true"></span>' : ''}</span><span class="tab-date">${d.dateLabel}</span>`;
+    b.onclick = () => switchTab(i);
+    dayTabs.appendChild(b);
+  });
+  [[INFO_TAB_IDS.osoitteet,"📍 Osoitteet"],[INFO_TAB_IDS.yhteystiedot,"📞 Yhteystiedot"],[INFO_TAB_IDS.saa,"🌤️ Sää"]].forEach(([id,label]) => {
+    const b = document.createElement("button");
+    const active = cur === id;
+    b.className = "info-tab" + (active ? " active" : "");
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", active ? "true" : "false");
+    if (active) b.setAttribute("aria-current", "page");
+    b.setAttribute("aria-controls", "eventList");
+    b.innerHTML = label;
+    b.onclick = () => switchTab(id);
+    infoTabs.appendChild(b);
+  });
 }
-function eventHtml(it, status="") { return `<div class="event ${status}"><div class="ev-icon ${it.color}">${esc(it.icon || "ℹ️")}</div><div class="ev-body">${it.time ? `<div class="ev-time">${esc(it.time)}${it.endTime ? `–${esc(it.endTime)}` : ""}</div>` : ""}<div class="ev-title ${it.accent ? "accent" : ""}">${esc(it.title)}<span class="badge-now">Nyt</span></div>${it.sub ? `<div class="ev-sub">${it.sub}</div>` : ""}</div></div>`; }
+function eventHtml(it, status="") { const timeText = it.time ? `${it.time}${it.endTime ? "–" + it.endTime : ""}` : ""; const label = [timeText, it.title].filter(Boolean).join(" "); return `<article class="event ${status}" aria-label="${esc(label)}"><div class="ev-icon ${it.color}" aria-hidden="true">${esc(it.icon || "ℹ️")}</div><div class="ev-body">${it.time ? `<div class="ev-time">${esc(it.time)}${it.endTime ? `–${esc(it.endTime)}` : ""}</div>` : ""}<h2 class="ev-title ${it.accent ? "accent" : ""}">${esc(it.title)}<span class="badge-now">Nyt</span></h2>${it.sub ? `<div class="ev-sub">${it.sub}</div>` : ""}</div></article>`; }
 function loadErrorsHtml() {
   let html = "";
   if (loadErrors.length) {
-    const hint = sourceStatus.asetukset === "ok" ? " Tarkista Asetukset-välilehden CSV-linkit tai julkaise välilehdet uudelleen CSV-muodossa." : " Tarkista Asetukset-välilehden julkaistu CSV-linkki koodista.";
-    html += `<div class="error-box"><strong>Huom:</strong> kaikkia Google Sheets -välilehtiä ei saatu ladattua.<br>${esc(loadErrors.join(" | "))}<br>${esc(hint)}</div>`;
+    const hint = sourceStatus.asetukset === "ok"
+      ? "Tarkista Asetukset-välilehden CSV-linkit tai julkaise välilehdet uudelleen CSV-muodossa."
+      : "Tarkista Asetukset-välilehden julkaistu CSV-linkki koodista.";
+    html += `<div class="error-box" role="status"><strong>Kaikkia tietoja ei saatu päivitettyä.</strong><br>Näytetään saatavilla olevia tai viimeksi ladattuja tietoja.<details><summary>Tekniset tiedot</summary>${esc(loadErrors.join(" | "))}<br>${esc(hint)}</details></div>`;
   }
   if (dataWarnings.length) {
     const shown = dataWarnings.slice(0,8).map(esc).join("<br>");
     const more = dataWarnings.length > 8 ? `<br>… ja ${dataWarnings.length - 8} muuta tarkistushuomiota.` : "";
-    html += `<div class="error-box"><strong>Tarkista data:</strong><br>${shown}${more}</div>`;
+    html += `<div class="error-box" role="status"><strong>Datassa on tarkistettavaa.</strong><br>Osa tiedoista voi puuttua tai viitata väärään tunnisteeseen.<details><summary>Näytä tarkistushuomiot</summary>${shown}${more}</details></div>`;
   }
   return html;
 }
@@ -392,7 +434,7 @@ function renderLeiriohjelmaTab() {
   for (let i=0; i<maxRows; i++) DAYS.forEach(d => { const item = byDay[d.key][i]; if (!item) { html += `<div class="program-cell"></div>`; return; } const time = programRowTime(item.row), end = programRowEndTime(item.row), title = pick(item.row,["title","otsikko"], pick(item.row,["type","tyyppi"],"Ohjelma")), desc = pick(item.row,["description","kuvaus","notes","lisatiedot"]), shownTime = pick(item.row,["time","aika"]) || (time ? (end ? `${time}-${end}` : time) : ""); html += `<div class="program-cell">${shownTime ? `<span class="program-time">${esc(shownTime)}</span>` : ""}<span class="program-main">${esc(title)}</span>${desc ? `<br>${esc(desc)}` : ""}</div>`; });
   html += `</div><div class="program-footnote">${esc(SETTINGS.program_note || SETTINGS.leiriohjelma_note || "*-Ruokailuilla on parin tunnin slotit ja ne voivat olla otteluiden kanssa päällekkäin. Huolehditaan, että kaikki käyvät syömässä.")}</div></div>`; $("eventList").innerHTML = html;
 }
-function renderOsoitteetTab() { hideNext(); let html = loadErrorsHtml(), groups = {}; visibleRows(DATA.osoitteet).forEach(r => { const c = pick(r,["category","kategoria"],"Muut"); (groups[c] ||= []).push(r); }); Object.entries(groups).forEach(([cat,rows]) => { html += `<div class="section-title">${esc(cap(cat))}</div>`; rows.forEach(r => { const name = pick(r,["name","nimi"]), addr = pick(r,["address","osoite"]), q = pick(r,["maps_query","karttahaku"], [name,addr].filter(Boolean).join(", ")); html += `<div class="addr-card"><div class="ev-icon ic-red">📍</div><div class="ev-body"><h3>${esc(name || pick(r,["place_id"],"Paikka"))}</h3><p>${addr ? esc(addr)+"<br>" : ""}${mapLink("Avaa kartassa", q)}${pick(r,["notes","lisatiedot"]) ? "<br>"+esc(pick(r,["notes","lisatiedot"])) : ""}</p></div></div>`; }); }); $("eventList").innerHTML = html || `<p class="small-note">Osoitteita ei vielä ole.</p>`; }
+function renderOsoitteetTab() { hideNext(); let html = loadErrorsHtml(), groups = {}; visibleRows(DATA.osoitteet).forEach(r => { const c = pick(r,["category","kategoria"],"Muut"); (groups[c] ||= []).push(r); }); Object.entries(groups).forEach(([cat,rows]) => { html += `<div class="section-title">${esc(cap(cat))}</div>`; rows.forEach(r => { const name = pick(r,["name","nimi"]), addr = pick(r,["address","osoite"]), q = pick(r,["maps_query","karttahaku"], [name,addr].filter(Boolean).join(", ")); html += `<div class="addr-card"><div class="ev-icon ic-red" aria-hidden="true">📍</div><div class="ev-body"><h3>${esc(name || pick(r,["place_id"],"Paikka"))}</h3><p>${addr ? esc(addr)+"<br>" : ""}${mapLink("Avaa kartassa", q, `Avaa kartassa: ${name || addr || "paikka"}`)}${pick(r,["notes","lisatiedot"]) ? "<br>"+esc(pick(r,["notes","lisatiedot"])) : ""}</p></div></div>`; }); }); $("eventList").innerHTML = html || `<p class="small-note">Osoitteita ei vielä ole.</p>`; }
 function contactUrl(row) {
   const direct = pick(row,["url","linkki","website","nettisivu","www","link"]);
   const notes = pick(row,["notes","lisatiedot"]);
@@ -411,8 +453,8 @@ function renderContactLinkCard(r) {
   const notes = pick(r,["notes","lisatiedot"]);
   const noteText = notes && notes !== url ? `<br>${esc(notes)}` : "";
   const safeUrl = safeExternalUrl(url);
-  const linkHtml = safeUrl ? `<a class="maplink" href="${esc(safeUrl)}" target="_blank" rel="noopener">🔗 Avaa linkki</a>` : `<span class="small-note">Linkki puuttuu tai ei ole http(s)-muodossa.</span>`;
-  return `<div class="addr-card"><div class="ev-icon ic-blue">🔗</div><div class="ev-body"><h3>${esc(title)}</h3><p>${role && role !== title ? `<strong>${esc(role)}</strong><br>` : ""}${linkHtml}${noteText}</p></div></div>`;
+  const linkHtml = safeUrl ? `<a class="maplink" aria-label="Avaa linkki: ${esc(title)}" href="${esc(safeUrl)}" target="_blank" rel="noopener"><span aria-hidden="true">🔗</span> Avaa linkki</a>` : `<span class="small-note">Linkki puuttuu tai ei ole http(s)-muodossa.</span>`;
+  return `<div class="addr-card"><div class="ev-icon ic-blue" aria-hidden="true">🔗</div><div class="ev-body"><h3>${esc(title)}</h3><p>${role && role !== title ? `<strong>${esc(role)}</strong><br>` : ""}${linkHtml}${noteText}</p></div></div>`;
 }
 function contactGroupOrder(cat) {
   const k = normKey(cat);
@@ -432,14 +474,14 @@ function renderYhteystiedotTab() {
     html += `<div class="section-title">${esc(cap(cat))}</div>`;
     rows.forEach(r => {
       const phone = pick(r,["phone","puhelin"]), email = pick(r,["email","sahkoposti"]), tel = phone ? String(phone).replace(/[^+\d]/g,"") : "";
-      html += `<div class="addr-card"><div class="ev-icon ic-red">👤</div><div class="ev-body"><h3>${esc(pick(r,["name","nimi"],"TÄYDENNÄ"))}</h3><p><strong>${esc(pick(r,["role","rooli"]))}</strong><br>${phone ? `<a class="maplink" href="tel:${esc(tel)}">📞 ${esc(phone)}</a><br>` : ""}${email ? `<a class="maplink" href="mailto:${esc(email)}">✉️ ${esc(email)}</a><br>` : ""}${pick(r,["notes","lisatiedot"]) ? esc(pick(r,["notes","lisatiedot"])) : ""}</p></div></div>`;
+      html += `<div class="addr-card"><div class="ev-icon ic-red" aria-hidden="true">👤</div><div class="ev-body"><h3>${esc(pick(r,["name","nimi"],"TÄYDENNÄ"))}</h3><p><strong>${esc(pick(r,["role","rooli"]))}</strong><br>${phone ? `<a class="maplink" aria-label="Soita numeroon ${esc(phone)}" href="tel:${esc(tel)}"><span aria-hidden="true">📞</span> ${esc(phone)}</a><br>` : ""}${email ? `<a class="maplink" aria-label="Lähetä sähköposti: ${esc(email)}" href="mailto:${esc(email)}"><span aria-hidden="true">✉️</span> ${esc(email)}</a><br>` : ""}${pick(r,["notes","lisatiedot"]) ? esc(pick(r,["notes","lisatiedot"])) : ""}</p></div></div>`;
     });
   });
   $("eventList").innerHTML = html || `<p class="small-note">Yhteystietoja ei vielä ole.</p>`;
 }
 
-async function fetchWeather() { const lat = parseNumberFi(SETTINGS.weather_lat,64.913), lon = parseNumberFi(SETTINGS.weather_lon,25.503); try { const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&wind_speed_unit=ms&timezone=Europe%2FHelsinki&forecast_days=16&cachebust=${Date.now()}`); if (!res.ok) throw new Error("HTTP "+res.status); weatherData = await res.json(); weatherData._fetched = new Date(); weatherError = ""; if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } catch(e) { weatherData = null; weatherError = e.message || String(e); if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } }
-function renderWeatherTab() { hideNext(); let html = loadErrorsHtml(); if (!weatherData?.hourly) { $("eventList").innerHTML = html + `<p class="small-note" style="text-align:center;margin-top:20px;">Sääennustetta haetaan…${weatherError ? `<br><strong>Virhe:</strong> ${esc(weatherError)}` : ""}</p>`; return; } const H = weatherData.hourly, tk = todayKey(), nowH = nowFi().getHours(), showHours = new Set([0,3,6,9,12,15,18,21]), byDay = {}; H.time.forEach((t,i) => { const [date,hm] = t.split("T"), hour = parseInt(hm.slice(0,2),10); if (!showHours.has(hour) || (date === tk && hour < nowH-2) || date < tk) return; (byDay[date] ||= []).push({hour,temp:Math.round(H.temperature_2m[i]),code:H.weather_code[i],rain:H.precipitation_probability[i],wind:Math.round(H.wind_speed_10m[i])}); }); const f = weatherData._fetched; html += `<p class="small-note">Sääennuste · ${esc(SETTINGS.weather_location || SETTINGS.weather_place || "Kempele")} — päivitetty ${String(f.getHours()).padStart(2,"0")}:${String(f.getMinutes()).padStart(2,"0")} (Open-Meteo)</p>`; Object.keys(byDay).sort().forEach(date => { const isCamp = DAYS.some(d => d.key === date), d = new Date(date+"T12:00:00"); html += `<div style="background:var(--card);border:${isCamp ? "2px solid var(--red)" : "1px solid var(--border)"};border-radius:12px;padding:10px 0 6px;margin-bottom:10px;"><div style="font-size:14px;font-weight:700;color:var(--text);padding:0 14px 6px;">${WD[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}. ${date===todayKey()?'<span class="tag">Tänään</span>':''} ${isCamp?'<span class="tag" style="background:var(--red);">⚾ Leiripäivä</span>':''}</div><div style="display:flex;overflow-x:auto;gap:2px;padding:0 8px;-webkit-overflow-scrolling:touch;">`; byDay[date].forEach(h => { const [emoji] = WMO[h.code] || ["🌡️","Sää"]; html += `<div style="min-width:56px;text-align:center;padding:4px 2px;"><div style="font-size:11px;font-weight:700;color:var(--sub);">${String(h.hour).padStart(2,"0")}</div><div style="font-size:22px;line-height:1.3;">${emoji}</div><div style="font-size:14px;font-weight:700;color:var(--red);">${h.temp}°</div><div style="font-size:10.5px;color:#2B5FA8;">💧 ${h.rain}%</div><div style="font-size:10.5px;color:var(--sub);">${h.wind} m/s</div></div>`; }); html += `</div></div>`; }); $("eventList").innerHTML = html; }
+async function fetchWeather() { const lat = parseNumberFi(SETTINGS.weather_lat,64.913), lon = parseNumberFi(SETTINGS.weather_lon,25.503); try { const res = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&wind_speed_unit=ms&timezone=Europe%2FHelsinki&forecast_days=16&cachebust=${Date.now()}`, {}, 12000); if (!res.ok) throw new Error("HTTP "+res.status); weatherData = await res.json(); weatherData._fetched = new Date(); weatherError = ""; if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } catch(e) { weatherData = null; weatherError = e.message || String(e); if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } }
+function renderWeatherTab() { hideNext(); let html = loadErrorsHtml(); if (!weatherData?.hourly) { $("eventList").innerHTML = html + `<p class="small-note" style="text-align:center;margin-top:20px;">Sääennustetta haetaan…${weatherError ? `<br><strong>Virhe:</strong> ${esc(weatherError)}` : ""}</p>`; return; } const H = weatherData.hourly, tk = todayKey(), nowH = nowFi().getHours(), showHours = new Set([0,3,6,9,12,15,18,21]), byDay = {}; H.time.forEach((t,i) => { const [date,hm] = t.split("T"), hour = parseInt(hm.slice(0,2),10); if (!showHours.has(hour) || (date === tk && hour < nowH-2) || date < tk) return; (byDay[date] ||= []).push({hour,temp:Math.round(H.temperature_2m[i]),code:H.weather_code[i],rain:H.precipitation_probability[i],wind:Math.round(H.wind_speed_10m[i])}); }); const f = weatherData._fetched; html += `<p class="small-note">Sääennuste · ${esc(SETTINGS.weather_location || SETTINGS.weather_place || "Kempele")} — päivitetty ${String(f.getHours()).padStart(2,"0")}:${String(f.getMinutes()).padStart(2,"0")} (Open-Meteo)</p>`; Object.keys(byDay).sort().forEach(date => { const isCamp = DAYS.some(d => d.key === date), d = new Date(date+"T12:00:00"); html += `<div style="background:var(--card);border:${isCamp ? "2px solid var(--red)" : "1px solid var(--border)"};border-radius:12px;padding:10px 0 6px;margin-bottom:10px;"><div style="font-size:14px;font-weight:700;color:var(--text);padding:0 14px 6px;">${WD[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}. ${date===todayKey()?'<span class="tag">Tänään</span>':''} ${isCamp?'<span class="tag" style="background:var(--red);">⚾ Leiripäivä</span>':''}</div><div style="display:flex;overflow-x:auto;gap:2px;padding:0 8px;-webkit-overflow-scrolling:touch;">`; byDay[date].forEach(h => { const [emoji] = WMO[h.code] || ["🌡️","Sää"]; html += `<div style="min-width:56px;text-align:center;padding:4px 2px;"><div style="font-size:11px;font-weight:700;color:var(--sub);">${String(h.hour).padStart(2,"0")}</div><div style="font-size:22px;line-height:1.3;" aria-hidden="true">${emoji}</div><div style="font-size:14px;font-weight:700;color:var(--red);">${h.temp}°</div><div style="font-size:10.5px;color:#2B5FA8;">💧 ${h.rain}%</div><div style="font-size:10.5px;color:var(--sub);">${h.wind} m/s</div></div>`; }); html += `</div></div>`; }); $("eventList").innerHTML = html; }
 function renderEvents() { const tab = getCurrentTab(); if (tab === INFO_TAB_IDS.osoitteet) return renderOsoitteetTab(); if (tab === INFO_TAB_IDS.yhteystiedot) return renderYhteystiedotTab(); if (tab === INFO_TAB_IDS.saa) return renderWeatherTab(); return renderDayTab(); }
 function renderClock() { const n = nowFi(); $("clock").textContent = `${["su","ma","ti","ke","to","pe","la"][n.getDay()]} ${n.getDate()}.${n.getMonth()+1}. klo ${String(n.getHours()).padStart(2,"0")}:${String(n.getMinutes()).padStart(2,"0")}`; }
 function renderStaleNote() {
