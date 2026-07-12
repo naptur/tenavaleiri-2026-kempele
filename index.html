@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: cached-data-2026-07-12 -->
+<!-- version: cached-data-talkoot-placeholder-2026-07-12 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -62,6 +62,7 @@ let DATA = {}, SETTINGS = {}, PLACES = {}, IDX = {}, DAYS = [], selectedTab = nu
 const DATA_CACHE_KEY = "tenavaleiri:data:v4";
 const WEATHER_CACHE_KEY = "tenavaleiri:weather:v2";
 const DATA_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
+const DATA_REFRESH_MS = 5 * 60 * 1000;
 let lastDataLoadAt = null, lastDataLoadFailed = false, lastDataFromCache = false, isUpdatingData = false;
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
@@ -371,9 +372,28 @@ function talkootForMatch(m) {
     seenRows.add(k);
     return true;
   });
-  const existingRoles = new Set(unique.map(r => roleKey(pick(r,["role","rooli"]))));
-  expectedRoles(m).forEach(role => { if (!existingRoles.has(roleKey(role))) unique.push({ match_id:m.matchId, role, person:"", visible:"TRUE", _generated:"TRUE" }); });
-  return unique;
+
+  const placeholder = isPlaceholderMatch(m);
+  const rolesToShow = placeholder
+    ? ["Tulostaulu", "3-tuomari", "Kirjuri", "Takarajatuomari"]
+    : expectedRoles(m);
+  const roleKeysToShow = new Set(rolesToShow.map(roleKey));
+
+  // Placeholder-ottelussa näytetään kaikki mahdolliset roolit, jotta samaan
+  // otteluikkunaan voidaan nimetä toimitsijat sekä koti- että vierasottelun
+  // varalta. Kun Pesistulokset vahvistaa ottelun oikeaksi koti- tai
+  // vierasotteluksi, ylimääräinen roolipari suodatetaan automaattisesti pois.
+  const rowsToShow = placeholder
+    ? unique
+    : unique.filter(r => roleKeysToShow.has(roleKey(pick(r,["role","rooli"]))));
+
+  const existingRoles = new Set(rowsToShow.map(r => roleKey(pick(r,["role","rooli"]))));
+  rolesToShow.forEach(role => {
+    if (!existingRoles.has(roleKey(role))) {
+      rowsToShow.push({ match_id:m.matchId, role, person:"", visible:"TRUE", _generated:"TRUE" });
+    }
+  });
+  return rowsToShow;
 }
 function talkooLinesHtml(rows, open="N.N.") { return rows.map(r => { const role = pick(r,["role","rooli"],"Rooli"); const person = pick(r,["person","henkilo"], open); const notes = pick(r,["notes","lisatiedot"]); return `<div style="margin-top:3px;">• <strong>${esc(role)}:</strong> ${esc(person)}${notes ? `<br><span style="color:var(--sub);margin-left:10px;">${esc(notes)}</span>` : ""}</div>`; }).join(""); }
 
