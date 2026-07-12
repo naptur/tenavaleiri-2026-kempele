@@ -388,6 +388,16 @@ function resultsUrlForMatch(m) {
   const direct = pick(m,["linkki","url","results_url","pesistulokset_url","tulospalvelu_url","ottelu_url","match_url","link"]);
   return direct || SETTINGS.pesistulokset_url || SETTINGS.results_url || SETTINGS.tulospalvelu_url || "";
 }
+function isPlaceholderMatch(m) {
+  const id = idKey(m?.matchId);
+  const notes = String(m?.notes || "").toLowerCase();
+  const home = idKey(m?.home);
+  const away = idKey(m?.away);
+  return notes.includes("otteluikkuna") || home === "cn" || away === "cn" || /^2026-07-\d{2}-\d{4}-\d{4}$/.test(id);
+}
+function matchDisplayTitle(m) {
+  return isPlaceholderMatch(m) ? "Ottelu" : (m?.match || "Ottelu");
+}
 function resultsLinkHtml(m) {
   const url = safeExternalUrl(resultsUrlForMatch(m));
   return url ? `<a class="resultlink" aria-label="Avaa ottelu Pesistuloksissa: ${esc(m.match || "ottelu")}" href="${esc(url)}" target="_blank" rel="noopener"><span aria-hidden="true">🔗</span> Pesistulokset</a>` : "";
@@ -435,7 +445,7 @@ function dayItems(date) {
   });
   IDX.ottelut.forEach(m => {
     if (m.date !== date) return; const sub = []; if (m.result) sub.push("Tulos: " + esc(m.result)); const place = placeHtmlForMatch(m); if (place) sub.push(place); const placeInfo = placeNotes(m.placeId); if (placeInfo && placeInfo !== m.notes) sub.push(esc(placeInfo)); const resultsLink = resultsLinkHtml(m); if (resultsLink) sub.push(resultsLink); if (m.notes) sub.push(esc(m.notes)); const roles = talkootForMatch(m); if (roles.length) sub.push(talkooLinesHtml(roles));
-    items.push({ source:"ottelu", date:m.date, time:m.time, endTime:m.endTime, icon:"⚾", color:"ic-red", accent:true, title:m.match, sub:sub.join("<br>") });
+    items.push({ source:"ottelu", date:m.date, time:m.time, endTime:m.endTime, icon:"⚾", color:"ic-red", accent:true, title:matchDisplayTitle(m), sub:sub.join("<br>") });
   });
   return items.sort((a,b) => (toMin(a.time) ?? 9999) - (toMin(b.time) ?? 9999) || (a._sortOffset || 0) - (b._sortOffset || 0));
 }
