@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- version: mobile-a11y-error-handling-2026-07-09 -->
+<!-- version: cached-data-2026-07-12 -->
 <html lang="fi">
 <head>
 <meta charset="UTF-8">
@@ -8,11 +8,12 @@
 <link rel="manifest" href="manifest.webmanifest?v=2">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=2">
 <link rel="icon" type="image/png" sizes="192x192" href="tenavaleiri-icon-192.png?v=2">
-<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=2">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=2">
 <meta name="theme-color" content="#d71920">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tenavaleiri">
+
 <style>
   :root {
     --red:#CC1F1F; --darkred:#991515; --green:#1A7A40; --navy:#1A1A44; --blue:#333399;
@@ -31,14 +32,14 @@
   .badge-now{display:none;background:var(--now-border);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle;text-transform:uppercase}.event.current .badge-now{display:inline-block}
   .ev-icon{width:40px;height:40px;min-width:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;color:#fff}.ic-red{background:var(--red)}.ic-green{background:var(--green)}.ic-navy{background:var(--navy)}.ic-darkred{background:var(--darkred)}.ic-blue{background:var(--blue)}.ic-transfer{background:#6B7280}
   .ev-body{flex:1;min-width:0}.ev-time{font-size:13px;font-weight:700;color:var(--red);margin-bottom:1px}.ev-title{font-size:16px;font-weight:700;line-height:1.35;margin:0}.ev-title.accent{color:var(--red)}.ev-sub{font-size:14px;color:#5F5F6A;margin-top:4px;line-height:1.48;overflow-wrap:anywhere}.addr-card h3{font-size:16px;color:var(--red);margin-bottom:3px}.addr-card p{font-size:14px;color:#5F5F6A;line-height:1.55}a.maplink{color:var(--red);font-weight:600;text-decoration:underline;text-underline-offset:2px}.resultlink{display:inline-block;margin-top:2px;color:var(--red);font-weight:700;text-decoration:underline;text-underline-offset:2px}
-  .small-note{font-size:13px;color:#5F5F6A;margin:2px 4px 12px;line-height:1.45}.section-title{font-size:17px;font-weight:700;color:var(--red);margin:14px 4px 8px}.tag{display:inline-block;background:var(--now-border);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;vertical-align:middle;text-transform:uppercase}.error-box{background:var(--bad-bg);border:1px solid #f0b5b5;border-radius:12px;padding:12px 14px;margin-bottom:12px;color:#8a1111;font-size:14px;line-height:1.5}.error-box details{margin-top:6px}.error-box summary{cursor:pointer;font-weight:700}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .small-note{font-size:13px;color:#5F5F6A;margin:2px 4px 12px;line-height:1.45}.data-status{font-size:12px;color:#5F5F6A;text-align:center;margin:0 4px 10px;min-height:16px}.data-status.updating{color:#A87800}.data-status.error{color:#8a1111}.section-title{font-size:17px;font-weight:700;color:var(--red);margin:14px 4px 8px}.tag{display:inline-block;background:var(--now-border);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;vertical-align:middle;text-transform:uppercase}.error-box{background:var(--bad-bg);border:1px solid #f0b5b5;border-radius:12px;padding:12px 14px;margin-bottom:12px;color:#8a1111;font-size:14px;line-height:1.5}.error-box details{margin-top:6px}.error-box summary{cursor:pointer;font-weight:700}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .program-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:14px}.program-title{text-align:center;color:#0B3D63;font-size:24px;font-weight:800;letter-spacing:.5px;margin:4px 0 14px;text-transform:uppercase}.program-grid{display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));border-top:2px solid #8FA2FF;border-left:2px solid #8FA2FF;min-width:780px}.program-head{background:#CFD7FF;border-right:2px solid #8FA2FF;border-bottom:2px solid #8FA2FF;text-align:center;font-weight:800;font-size:12px;line-height:1.25;padding:10px 6px;text-transform:uppercase}.program-cell{border-right:2px solid #8FA2FF;border-bottom:2px solid #8FA2FF;min-height:68px;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px 7px;font-size:13px;line-height:1.25;white-space:pre-line}.program-time{font-weight:500;display:block;margin-bottom:2px}.program-main{font-weight:650}.program-footnote{color:#0B3D63;font-size:12px;font-style:italic;line-height:1.45;margin:10px 2px 2px}
   @media(max-width:620px){.program-wrap{margin-left:-4px;margin-right:-4px;border-radius:12px;padding:10px 8px}.program-title{font-size:21px}.program-grid{grid-template-columns:repeat(6,128px);min-width:768px}.program-cell{font-size:12.5px;min-height:66px;padding:9px 6px}} footer{text-align:center;font-size:12px;color:#777;margin-top:24px}
 </style>
 </head>
 <body>
 <div class="topbar"><header><img class="logo" src="logo.png" alt="Joukkueen logo" onerror="this.style.visibility='hidden'"><div class="head-text"><h1 id="siteTitle">Tenavaleiri 2026</h1><div class="team" id="teamLine">Ladataan tietoja...</div><div class="clock" id="clock"></div></div></header><div class="day-tabs" id="dayTabs" role="tablist" aria-label="Päivävalinta"></div><div class="info-tabs" id="infoTabs" role="tablist" aria-label="Lisätiedot"></div></div>
-<main id="mainContent" role="main" tabindex="-1"><div class="next-banner" id="nextBanner" aria-live="polite"><div class="nb-label">Seuraavaksi</div><div class="nb-title" id="nbTitle"></div><div class="nb-sub" id="nbSub"></div><div class="nb-countdown" id="nbCountdown"></div></div><div id="eventList" aria-live="polite"><p class="small-note" style="text-align:center;margin-top:20px;">Ladataan Google Sheets -tietoja...</p></div><footer id="footerText">Tenavaleiri 2026</footer></main>
+<main id="mainContent" role="main" tabindex="-1"><div class="next-banner" id="nextBanner" aria-live="polite"><div class="nb-label">Seuraavaksi</div><div class="nb-title" id="nbTitle"></div><div class="nb-sub" id="nbSub"></div><div class="nb-countdown" id="nbCountdown"></div></div><div id="dataStaleNote" class="data-status" aria-live="polite" style="display:none"></div><div id="eventList" aria-live="polite"><p class="small-note" style="text-align:center;margin-top:20px;">Ladataan Google Sheets -tietoja...</p></div><footer id="footerText">Tenavaleiri 2026</footer></main>
 <script>
 const DATA_SOURCES = {
   // Asetukset on ainoa koodiin kiinnitetty CSV-lähde.
@@ -58,7 +59,10 @@ const WD_LONG = ["SUNNUNTAI","MAANANTAI","TIISTAI","KESKIVIIKKO","TORSTAI","PERJ
 const WMO = {0:["☀️","Selkeää"],1:["🌤️","Enimmäkseen selkeää"],2:["⛅","Puolipilvistä"],3:["☁️","Pilvistä"],45:["🌫️","Sumua"],48:["🌫️","Sumua"],51:["🌦️","Tihkusadetta"],53:["🌦️","Tihkusadetta"],55:["🌦️","Tihkusadetta"],61:["🌧️","Heikkoa sadetta"],63:["🌧️","Sadetta"],65:["🌧️","Voimakasta sadetta"],71:["❄️","Lumisadetta"],73:["❄️","Lumisadetta"],75:["❄️","Lumisadetta"],80:["🌦️","Sadekuuroja"],81:["🌦️","Sadekuuroja"],82:["🌧️","Voimakkaita kuuroja"],95:["⛈️","Ukkosta"]};
 
 let DATA = {}, SETTINGS = {}, PLACES = {}, IDX = {}, DAYS = [], selectedTab = null, weatherData = null, weatherError = "", loadErrors = [], dataWarnings = [], sourceStatus = {};
-let lastDataLoadAt = null, lastDataLoadFailed = false;
+const DATA_CACHE_KEY = "tenavaleiri:data:v4";
+const WEATHER_CACHE_KEY = "tenavaleiri:weather:v2";
+const DATA_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
+let lastDataLoadAt = null, lastDataLoadFailed = false, lastDataFromCache = false, isUpdatingData = false;
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 const cleanId = v => String(v || "").trim();
@@ -87,6 +91,60 @@ const normText = s => String(s || "").trim().toLowerCase().replace(/[–—]/g,"
 const roleKey = s => normKey(s).replace(/_/g,"");
 const visibleRows = rows => (rows || []).filter(r => isTrue(r.visible));
 const parseNumberFi = (v, fallback) => { const n = Number(String(v ?? "").trim().replace(",", ".")); return Number.isFinite(n) ? n : fallback; };
+
+function readJsonCache(key, maxAgeMs=Infinity) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return null;
+    const cached = JSON.parse(raw);
+    if (!cached || !cached.savedAt) return null;
+    if (Date.now() - Number(cached.savedAt) > maxAgeMs) return null;
+    return cached;
+  } catch (err) {
+    return null;
+  }
+}
+function writeJsonCache(key, payload) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ ...payload, savedAt: Date.now() }));
+  } catch (err) {
+    // Välimuisti voi epäonnistua yksityisessä selaustilassa tai jos tila on täynnä.
+  }
+}
+function restoreDataFromCache() {
+  const cached = readJsonCache(DATA_CACHE_KEY, DATA_CACHE_MAX_AGE_MS);
+  if (!cached?.data) return false;
+  DATA = cached.data;
+  loadErrors = [];
+  sourceStatus = cached.sourceStatus || {};
+  lastDataLoadAt = cached.loadedAt ? new Date(cached.loadedAt) : new Date(cached.savedAt);
+  lastDataLoadFailed = !!cached.lastDataLoadFailed;
+  lastDataFromCache = true;
+  return true;
+}
+function saveDataToCache() {
+  writeJsonCache(DATA_CACHE_KEY, {
+    data: DATA,
+    sourceStatus,
+    loadedAt: lastDataLoadAt ? lastDataLoadAt.toISOString() : new Date().toISOString(),
+    lastDataLoadFailed
+  });
+}
+function restoreWeatherFromCache() {
+  const cached = readJsonCache(WEATHER_CACHE_KEY, 1000 * 60 * 60 * 3);
+  if (!cached?.weatherData) return false;
+  weatherData = cached.weatherData;
+  weatherData._fetched = cached.fetchedAt ? new Date(cached.fetchedAt) : new Date(cached.savedAt);
+  weatherError = "";
+  return true;
+}
+function saveWeatherToCache() {
+  if (!weatherData) return;
+  writeJsonCache(WEATHER_CACHE_KEY, {
+    weatherData,
+    fetchedAt: weatherData._fetched ? weatherData._fetched.toISOString() : new Date().toISOString()
+  });
+}
 
 function parseCsv(text) {
   text = text.replace(/^\uFEFF/, "");
@@ -163,6 +221,8 @@ async function loadAllData() {
   loadErrors = errors;
   lastDataLoadFailed = errors.length > 0;
   lastDataLoadAt = new Date();
+  lastDataFromCache = false;
+  saveDataToCache();
 }
 
 function normDate(v) {
@@ -488,35 +548,59 @@ function renderYhteystiedotTab() {
   $("eventList").innerHTML = html || `<p class="small-note">Yhteystietoja ei vielä ole.</p>`;
 }
 
-async function fetchWeather() { const lat = parseNumberFi(SETTINGS.weather_lat,64.913), lon = parseNumberFi(SETTINGS.weather_lon,25.503); try { const res = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&wind_speed_unit=ms&timezone=Europe%2FHelsinki&forecast_days=16&cachebust=${Date.now()}`, {}, 12000); if (!res.ok) throw new Error("HTTP "+res.status); weatherData = await res.json(); weatherData._fetched = new Date(); weatherError = ""; if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } catch(e) { weatherData = null; weatherError = e.message || String(e); if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } }
+async function fetchWeather() { const lat = parseNumberFi(SETTINGS.weather_lat,64.913), lon = parseNumberFi(SETTINGS.weather_lon,25.503); try { const res = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,weather_code,precipitation_probability,wind_speed_10m&wind_speed_unit=ms&timezone=Europe%2FHelsinki&forecast_days=16`, { cache:"default" }, 12000); if (!res.ok) throw new Error("HTTP "+res.status); weatherData = await res.json(); weatherData._fetched = new Date(); weatherError = ""; saveWeatherToCache(); if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } catch(e) { weatherError = e.message || String(e); if (!weatherData) restoreWeatherFromCache(); if (getCurrentTab() === INFO_TAB_IDS.saa) renderEvents(); } }
 function renderWeatherTab() { hideNext(); let html = loadErrorsHtml(); if (!weatherData?.hourly) { $("eventList").innerHTML = html + `<p class="small-note" style="text-align:center;margin-top:20px;">Sääennustetta haetaan…${weatherError ? `<br><strong>Virhe:</strong> ${esc(weatherError)}` : ""}</p>`; return; } const H = weatherData.hourly, tk = todayKey(), nowH = nowFi().getHours(), showHours = new Set([0,3,6,9,12,15,18,21]), byDay = {}; H.time.forEach((t,i) => { const [date,hm] = t.split("T"), hour = parseInt(hm.slice(0,2),10); if (!showHours.has(hour) || (date === tk && hour < nowH-2) || date < tk) return; (byDay[date] ||= []).push({hour,temp:Math.round(H.temperature_2m[i]),code:H.weather_code[i],rain:H.precipitation_probability[i],wind:Math.round(H.wind_speed_10m[i])}); }); const f = weatherData._fetched; html += `<p class="small-note">Sääennuste · ${esc(SETTINGS.weather_location || SETTINGS.weather_place || "Kempele")} — päivitetty ${String(f.getHours()).padStart(2,"0")}:${String(f.getMinutes()).padStart(2,"0")} (Open-Meteo)</p>`; Object.keys(byDay).sort().forEach(date => { const isCamp = DAYS.some(d => d.key === date), d = new Date(date+"T12:00:00"); html += `<div style="background:var(--card);border:${isCamp ? "2px solid var(--red)" : "1px solid var(--border)"};border-radius:12px;padding:10px 0 6px;margin-bottom:10px;"><div style="font-size:14px;font-weight:700;color:var(--text);padding:0 14px 6px;">${WD[d.getDay()]} ${d.getDate()}.${d.getMonth()+1}. ${date===todayKey()?'<span class="tag">Tänään</span>':''} ${isCamp?'<span class="tag" style="background:var(--red);">⚾ Leiripäivä</span>':''}</div><div style="display:flex;overflow-x:auto;gap:2px;padding:0 8px;-webkit-overflow-scrolling:touch;">`; byDay[date].forEach(h => { const [emoji] = WMO[h.code] || ["🌡️","Sää"]; html += `<div style="min-width:56px;text-align:center;padding:4px 2px;"><div style="font-size:11px;font-weight:700;color:var(--sub);">${String(h.hour).padStart(2,"0")}</div><div style="font-size:22px;line-height:1.3;" aria-hidden="true">${emoji}</div><div style="font-size:14px;font-weight:700;color:var(--red);">${h.temp}°</div><div style="font-size:10.5px;color:#2B5FA8;">💧 ${h.rain}%</div><div style="font-size:10.5px;color:var(--sub);">${h.wind} m/s</div></div>`; }); html += `</div></div>`; }); $("eventList").innerHTML = html; }
 function renderEvents() { const tab = getCurrentTab(); if (tab === INFO_TAB_IDS.osoitteet) return renderOsoitteetTab(); if (tab === INFO_TAB_IDS.yhteystiedot) return renderYhteystiedotTab(); if (tab === INFO_TAB_IDS.saa) return renderWeatherTab(); return renderDayTab(); }
 function renderClock() { const n = nowFi(); $("clock").textContent = `${["su","ma","ti","ke","to","pe","la"][n.getDay()]} ${n.getDate()}.${n.getMonth()+1}. klo ${String(n.getHours()).padStart(2,"0")}:${String(n.getMinutes()).padStart(2,"0")}`; }
 function renderStaleNote() {
   const el = $("dataStaleNote");
-  if (!el || !lastDataLoadAt) { if (el) el.style.display = "none"; return; }
-  const mins = Math.max(0, Math.round((Date.now() - lastDataLoadAt.getTime()) / 60000));
+  if (!el) return;
+  if (!lastDataLoadAt && !isUpdatingData) { el.style.display = "none"; return; }
+  const mins = lastDataLoadAt ? Math.max(0, Math.round((Date.now() - lastDataLoadAt.getTime()) / 60000)) : 0;
   const label = mins < 1 ? "alle minuutti sitten" : mins === 1 ? "1 min sitten" : `${mins} min sitten`;
-  el.textContent = (lastDataLoadFailed ? "⚠️ Tietoja ei saatu kaikilta välilehdiltä — viimeisin yritys " : "Tiedot päivitetty ") + label;
+  let txt = "";
+  if (isUpdatingData && lastDataLoadAt) txt = `${lastDataFromCache ? "Näytetään viimeksi ladattuja tietoja" : "Tiedot päivitetty " + label} — päivitetään…`;
+  else if (isUpdatingData) txt = "Päivitetään tietoja…";
+  else if (lastDataLoadFailed) txt = `⚠️ Kaikkia tietoja ei saatu päivitettyä — viimeisin yritys ${label}`;
+  else txt = `${lastDataFromCache ? "Näytetään viimeksi ladattuja tietoja" : "Tiedot päivitetty"} ${label}`;
+  el.textContent = txt;
+  el.className = "data-status" + (isUpdatingData ? " updating" : lastDataLoadFailed ? " error" : "");
   el.style.display = "block";
 }
 function render() { renderTabs(); renderEvents(); renderClock(); renderStaleNote(); }
 function cap(s) { s = String(s || ""); return s.charAt(0).toUpperCase() + s.slice(1).replace(/_/g," "); }
-async function refreshData(isInitial=false) {
+async function refreshData(isInitial=false, resetTab=false) {
+  isUpdatingData = true;
+  renderStaleNote();
   try {
     await loadAllData();
     buildState();
-    if (isInitial) selectedTab = getAutoDayIndex();
+    if (resetTab || (isInitial && selectedTab === null)) selectedTab = getAutoDayIndex();
+    isUpdatingData = false;
     render();
   } catch (err) {
     loadErrors = [err.message || String(err)];
     lastDataLoadFailed = true;
     lastDataLoadAt = new Date();
-    if (isInitial) $("eventList").innerHTML = `<div class="error-box"><strong>Tietojen lataus epäonnistui.</strong><br>${esc(err.message || err)}<br>Päivitä sivu hetken kuluttua.</div>`;
+    isUpdatingData = false;
+    if (isInitial && !DAYS.length) $("eventList").innerHTML = `<div class="error-box"><strong>Tietojen lataus epäonnistui.</strong><br>${esc(err.message || err)}<br>Päivitä sivu hetken kuluttua.</div>`;
     else render();
   }
 }
-async function init() { renderClock(); await refreshData(true); fetchWeather(); }
+async function init() {
+  renderClock();
+  const restored = restoreDataFromCache();
+  restoreWeatherFromCache();
+  if (restored) {
+    buildState();
+    selectedTab = getAutoDayIndex();
+    render();
+    refreshData(false, false);
+  } else {
+    await refreshData(true, true);
+  }
+  fetchWeather();
+}
 init();
 setInterval(renderClock, 1000);
 setInterval(fetchWeather, 60*60*1000);
